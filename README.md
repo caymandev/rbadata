@@ -32,13 +32,77 @@ tables = rbapy.browse_rba_tables()
 series = rbapy.browse_rba_series("inflation")
 ```
 
+## Advanced Usage
+
+### Inflation Calculator
+
+```python
+# Calculate inflation-adjusted values
+calc = rbapy.InflationCalculator()
+
+# How much was $100 in 2000 worth in 2023?
+value_2023 = calc.calculate_value(100, "2000", "2023")
+
+# Calculate inflation rate
+inflation_rate = calc.calculate_inflation_rate("2020", "2023")
+
+# Quick calculation
+adjusted_value = rbapy.inflation_calculator(1000, "2010", "2023")
+```
+
+### Chart Pack
+
+```python
+# Access RBA Chart Pack
+chart_pack = rbapy.get_chart_pack()
+
+# Get available categories
+categories = chart_pack.get_categories()
+
+# Get charts by category
+inflation_charts = chart_pack.get_charts_by_category("inflation")
+
+# Download the full Chart Pack PDF
+chart_pack.download_chart_pack()
+```
+
+### Economic Snapshots
+
+```python
+# Get economic indicators snapshot
+indicators = rbapy.get_economic_indicators()
+
+# Access snapshots
+snapshots = rbapy.get_snapshots()
+snapshots.download_snapshot("economic-indicators")
+```
+
+### Glossary
+
+```python
+# Look up term definitions
+definition = rbapy.define("CPI")
+
+# Search for terms
+glossary = rbapy.get_glossary()
+inflation_terms = glossary.search("inflation")
+```
+
 ## Features
 
+### Core Features
 - Download current and historical RBA statistical tables
 - Access RBA economic forecasts since 1990
 - Search and browse available data series
 - Automatic data tidying into pandas DataFrames
 - Robust error handling and retry logic
+
+### Additional Features
+- **Inflation Calculator**: Calculate inflation-adjusted values and inflation rates
+- **Chart Pack Access**: Download and explore RBA Chart Pack data
+- **Economic Snapshots**: Access key economic indicators and visualizations
+- **Statistical Alerts**: Set up notifications for new data releases
+- **Glossary**: Look up definitions of economic and financial terms
 
 ## License
 
