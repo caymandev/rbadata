@@ -4,10 +4,32 @@ A Python package to download and tidy data from the Reserve Bank of Australia (R
 
 This package is a Python implementation inspired by the R package `readrba`, providing similar functionality for accessing RBA statistical tables and economic forecasts.
 
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Features](#features)
+- [Examples](#examples)
+- [Documentation](#documentation)
+- [Requirements](#requirements)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Installation
 
 ```bash
 pip install rbapy
+```
+
+For development installation:
+
+```bash
+git clone https://github.com/caymandev/rbapy.git
+cd rbapy
+pip install -e ".[dev]"
 ```
 
 ## Quick Start
@@ -103,6 +125,62 @@ inflation_terms = glossary.search("inflation")
 - **Economic Snapshots**: Access key economic indicators and visualizations
 - **Statistical Alerts**: Set up notifications for new data releases
 - **Glossary**: Look up definitions of economic and financial terms
+
+## Examples
+
+The package includes comprehensive examples demonstrating all features:
+
+1. **Basic Usage** - Core functionality and data reading
+2. **Data Browsing** - Searching and discovering available data
+3. **Forecasts** - Working with RBA economic forecasts
+4. **Inflation Calculator** - Real-world inflation calculations
+5. **Chart Pack** - Accessing visual economic summaries
+6. **Snapshots** - Quick economic indicators
+7. **Alerts** - Setting up data release notifications
+8. **Glossary** - Economic terminology reference
+9. **Advanced Usage** - Performance optimization and bulk operations
+10. **Data Analysis** - Real-world economic analysis examples
+
+See the [examples directory](examples/) for detailed code examples with inline documentation.
+
+## Documentation
+
+### Data Sources
+
+- **Statistical Tables**: Access to all RBA statistical tables (current and historical)
+- **Forecasts**: Public RBA forecasts since 1990 from Statement on Monetary Policy
+- **Chart Pack**: Visual summaries released 8 times per year
+- **Snapshots**: Key economic indicators, economy composition, and payment methods
+
+### Common Use Cases
+
+```python
+# Monitor inflation
+inflation = rbapy.read_rba(series_id="GCPIAG")
+current_cpi = inflation.iloc[-1]['value']
+
+# Track interest rates
+cash_rate = rbapy.read_cashrate()
+current_rate = cash_rate.iloc[-1]['value']
+
+# Analyze employment
+unemployment = rbapy.read_rba(series_id="GLFSURSA")
+
+# Get latest economic forecasts
+latest_forecasts = rbapy.rba_forecasts(all_or_latest="latest")
+```
+
+## Requirements
+
+- Python 3.8+
+- pandas >= 1.3.0
+- requests >= 2.25.0
+- beautifulsoup4 >= 4.9.0
+- openpyxl >= 3.0.0
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
