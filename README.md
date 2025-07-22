@@ -4,7 +4,7 @@ A Python package to download and tidy data from the Reserve Bank of Australia (R
 
 This package is a Python implementation inspired by the R package `readrba`, providing similar functionality for accessing RBA statistical tables and economic forecasts.
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Coverage](https://img.shields.io/badge/coverage-97%25-brightgreen)](https://github.com/caymandev/rbadata)
 [![Tests](https://github.com/caymandev/rbadata/actions/workflows/tests.yml/badge.svg)](https://github.com/caymandev/rbadata/actions/workflows/tests.yml)
@@ -174,7 +174,7 @@ latest_forecasts = rbadata.rba_forecasts(all_or_latest="latest")
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.9+
 - pandas >= 1.3.0
 - requests >= 2.25.0
 - beautifulsoup4 >= 4.9.0
