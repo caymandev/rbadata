@@ -17,7 +17,7 @@ class TestInflationCalculator:
         """Test calculator initialization loads CPI data."""
         # Mock CPI data
         mock_cpi_data = pd.DataFrame({
-            'date': pd.date_range('2020-01-01', periods=12, freq='Q'),
+            'date': pd.date_range('2020-01-01', periods=12, freq='QE'),
             'value': [100.0 + i for i in range(12)],
             'series_id': ['GCPIAG'] * 12
         })
@@ -116,7 +116,7 @@ class TestInflationCalculator:
         """Test getting CPI series with date filtering."""
         # Mock CPI data
         mock_cpi_data = pd.DataFrame({
-            'date': pd.date_range('2020-01-01', periods=12, freq='Q'),
+            'date': pd.date_range('2020-01-01', periods=12, freq='QE'),
             'value': [100.0 + i for i in range(12)],
             'series_id': ['GCPIAG'] * 12
         })

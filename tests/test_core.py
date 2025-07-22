@@ -35,7 +35,7 @@ class TestReadRBA:
         
         # Create sample tidy data
         sample_data = pd.DataFrame({
-            'date': pd.date_range('2020-01-01', periods=3, freq='Q'),
+            'date': pd.date_range('2020-01-01', periods=3, freq='QE'),
             'series': ['CPI'] * 3,
             'series_id': ['GCPIAG'] * 3,
             'value': [100.0, 101.0, 102.0]
@@ -71,7 +71,7 @@ class TestReadRBA:
         
         # Create sample data with multiple series
         sample_data = pd.DataFrame({
-            'date': pd.date_range('2020-01-01', periods=6, freq='Q'),
+            'date': pd.date_range('2020-01-01', periods=6, freq='QE'),
             'series': ['CPI'] * 3 + ['Other'] * 3,
             'series_id': ['GCPIAG'] * 3 + ['OTHER'] * 3,
             'value': [100.0, 101.0, 102.0, 200.0, 201.0, 202.0]

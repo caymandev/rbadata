@@ -109,7 +109,7 @@ def _get_historical_forecasts() -> pd.DataFrame:
     # For now, create sample data
     data = {
         "forecast_date": [pd.Timestamp("2010-05-01")] * 4,
-        "date": pd.date_range("2010-06-01", periods=4, freq="Q"),
+        "date": pd.date_range("2010-06-01", periods=4, freq="QE"),
         "series": ["gdp_change"] * 4,
         "value": [3.5, 3.7, 3.8, 3.6],
         "series_desc": ["GDP growth - year-ended"] * 4,
@@ -126,7 +126,7 @@ def _get_recent_forecasts() -> pd.DataFrame:
     # For now, create sample data
     data = {
         "forecast_date": [pd.Timestamp("2023-05-01")] * 4,
-        "date": pd.date_range("2023-06-01", periods=4, freq="Q"),
+        "date": pd.date_range("2023-06-01", periods=4, freq="QE"),
         "series": ["cpi_annual"] * 4,
         "value": [5.8, 4.9, 4.1, 3.2],
         "series_desc": ["CPI - 4 quarter ended"] * 4,
@@ -156,7 +156,7 @@ def _scrape_latest_forecasts() -> pd.DataFrame:
     
     # Create sample latest forecast data
     forecast_date = pd.Timestamp("2024-08-01")
-    dates = pd.date_range("2024-06-01", "2026-12-01", freq="Q")
+    dates = pd.date_range("2024-06-01", "2026-12-01", freq="QE")
     
     data_rows = []
     for series_desc, series_code in series_map.items():

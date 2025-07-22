@@ -60,12 +60,16 @@ class Glossary:
         
         # Check common abbreviations
         if term_upper in self._terms:
-            return self._terms[term_upper].copy()
+            result = self._terms[term_upper].copy()
+            result["term"] = term_upper
+            return result
         
         # Check full term names
         for key, value in self._terms.items():
             if term.lower() in value.get("full_name", "").lower():
-                return value.copy()
+                result = value.copy()
+                result["term"] = key
+                return result
         
         raise RBAPyError(f"Term '{term}' not found in glossary")
     
@@ -217,7 +221,7 @@ class Glossary:
         glossary = {
             "CPI": {
                 "full_name": "Consumer Price Index",
-                "definition": "A measure of the average change over time in the prices paid by urban consumers for a market basket of consumer goods and services.",
+                "definition": "A measure of inflation that tracks the average change over time in the prices paid by urban consumers for a market basket of consumer goods and services.",
                 "category": "Inflation",
                 "related_terms": ["Inflation", "Price Index"],
                 "source": "RBA"

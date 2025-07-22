@@ -242,7 +242,7 @@ class ChartPack:
         
         # Extract release date
         date_pattern = re.compile(r"(\d{1,2}\s+\w+\s+\d{4})")
-        date_text = soup.find(text=date_pattern)
+        date_text = soup.find(string=date_pattern)
         if date_text:
             try:
                 self._last_update = pd.to_datetime(date_pattern.search(date_text).group(1))
@@ -273,22 +273,35 @@ class ChartPack:
         """Guess the category based on chart title."""
         title_lower = title.lower()
         
-        if any(word in title_lower for word in ["inflation", "cpi", "price"]):
+        # Check more specific patterns first - order matters!
+        # Priority order based on test expectations:
+        # 1. Housing (most specific - "house prices" shouldn't match "price")
+        # 2. Inflation/CPI (specific economic indicator)
+        # 3. Credit/Money (before "growth")
+        # 4. Exchange rates (before general "rate")
+        # 5. World Economy (contains country names)
+        # 6. Australian Growth
+        # 7. Labour Market
+        # 8. Interest Rates (most general - contains "rate")
+        
+        if any(word in title_lower for word in ["house", "property", "dwelling"]):
+            return "Housing"
+        elif any(word in title_lower for word in ["inflation", "cpi", "price"]):
             return "Inflation"
+        elif any(word in title_lower for word in ["credit", "lending", "debt", "money"]):
+            return "Credit and Money"
+        elif any(word in title_lower for word in ["exchange", "currency", "dollar"]):
+            return "Exchange Rates"
+        elif any(word in title_lower for word in ["china", "europe", "global"]):
+            return "World Economy"
+        elif re.search(r'\bus\b', title_lower):  # Match "US" as a word, not in "USD"
+            return "World Economy"
         elif any(word in title_lower for word in ["gdp", "growth", "output"]):
             return "Australian Growth"
         elif any(word in title_lower for word in ["unemployment", "labour", "labor", "employment"]):
             return "Labour Market"
-        elif any(word in title_lower for word in ["interest", "rate", "yield"]):
+        elif any(word in title_lower for word in ["interest", "rate", "yield", "cash rate"]):
             return "Interest Rates"
-        elif any(word in title_lower for word in ["exchange", "currency", "dollar"]):
-            return "Exchange Rates"
-        elif any(word in title_lower for word in ["credit", "lending", "debt"]):
-            return "Credit and Money"
-        elif any(word in title_lower for word in ["house", "property", "dwelling"]):
-            return "Housing"
-        elif any(word in title_lower for word in ["china", "us", "europe", "global"]):
-            return "World Economy"
         else:
             return "Other"
     

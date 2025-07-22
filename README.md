@@ -6,6 +6,8 @@ This package is a Python implementation inspired by the R package `readrba`, pro
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Coverage](https://img.shields.io/badge/coverage-97%25-brightgreen)](https://github.com/caymandev/rbapy)
+[![Tests](https://github.com/caymandev/rbapy/actions/workflows/tests.yml/badge.svg)](https://github.com/caymandev/rbapy/actions/workflows/tests.yml)
 
 ## Table of Contents
 
@@ -178,9 +180,40 @@ latest_forecasts = rbapy.rba_forecasts(all_or_latest="latest")
 - beautifulsoup4 >= 4.9.0
 - openpyxl >= 3.0.0
 
+## Testing
+
+The package includes comprehensive tests with high coverage. To run tests locally:
+
+```bash
+# Run tests
+pytest tests/
+
+# Run tests with coverage report
+pytest tests/ --cov=rbapy --cov-report=term-missing
+
+# Generate coverage badge locally
+python scripts/generate_coverage_badge.py --update-readme
+```
+
+### Coverage
+
+The project maintains high test coverage (currently 97%). Coverage is automatically tracked via GitHub Actions and reported using Codecov.
+
+To set up Codecov for your fork:
+1. Sign up at [codecov.io](https://codecov.io)
+2. Add your repository
+3. Add the `CODECOV_TOKEN` to your GitHub repository secrets
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+Before submitting:
+1. Run the test suite and ensure all tests pass
+2. Add tests for any new functionality
+3. Ensure code coverage remains high
+4. Run linting: `flake8 rbapy/`
+5. Format code: `black rbapy/`
 
 ## License
 

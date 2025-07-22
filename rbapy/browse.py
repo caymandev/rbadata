@@ -44,7 +44,8 @@ def browse_rba_tables(
     # Sort by table number
     tables = tables.sort_values("no")
     
-    return tables[["title", "no", "url", "current_or_historical", "readable"]]
+    # Return the dataframe as-is
+    return tables
 
 
 def browse_rba_series(
