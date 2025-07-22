@@ -6,22 +6,23 @@ import pytest
 import pandas as pd
 from unittest.mock import patch, Mock
 from datetime import datetime
-from rbapy.forecasts import (
+from rbadata.forecasts import (
     rba_forecasts,
     _get_historical_forecasts,
     _get_recent_forecasts,
     _scrape_latest_forecasts
 )
-from rbapy.exceptions import RBAPyError
+from rbadata.utils import get_pandas_freq_alias
+from rbadata.exceptions import RBADataError
 
 
 class TestRBAForecasts:
     """Test the main rba_forecasts function."""
     
-    @patch('rbapy.forecasts.check_rba_connection')
-    @patch('rbapy.forecasts._get_historical_forecasts')
-    @patch('rbapy.forecasts._get_recent_forecasts')
-    @patch('rbapy.forecasts._scrape_latest_forecasts')
+    @patch('rbadata.forecasts.check_rba_connection')
+    @patch('rbadata.forecasts._get_historical_forecasts')
+    @patch('rbadata.forecasts._get_recent_forecasts')
+    @patch('rbadata.forecasts._scrape_latest_forecasts')
     def test_rba_forecasts_all(self, mock_scrape, mock_recent, mock_hist, mock_check):
         """Test getting all forecasts."""
         # Setup mocks
@@ -30,7 +31,7 @@ class TestRBAForecasts:
         # Mock historical forecasts
         hist_data = pd.DataFrame({
             'forecast_date': [pd.Timestamp('2010-05-01')] * 2,
-            'date': pd.date_range('2010-06-01', periods=2, freq='QE'),
+            'date': pd.date_range('2010-06-01', periods=2, freq=get_pandas_freq_alias("Q")),
             'series': ['gdp_change'] * 2,
             'value': [3.5, 3.7],
             'series_desc': ['GDP growth'] * 2,
@@ -42,7 +43,7 @@ class TestRBAForecasts:
         # Mock recent forecasts
         recent_data = pd.DataFrame({
             'forecast_date': [pd.Timestamp('2023-05-01')] * 2,
-            'date': pd.date_range('2023-06-01', periods=2, freq='QE'),
+            'date': pd.date_range('2023-06-01', periods=2, freq=get_pandas_freq_alias("Q")),
             'series': ['cpi_annual'] * 2,
             'value': [5.8, 4.9],
             'series_desc': ['CPI'] * 2,
@@ -54,7 +55,7 @@ class TestRBAForecasts:
         # Mock latest forecasts
         latest_data = pd.DataFrame({
             'forecast_date': [pd.Timestamp('2024-08-01')] * 2,
-            'date': pd.date_range('2024-06-01', periods=2, freq='QE'),
+            'date': pd.date_range('2024-06-01', periods=2, freq=get_pandas_freq_alias("Q")),
             'series': ['gdp_change'] * 2,
             'value': [2.5, 2.6],
             'series_desc': ['GDP'] * 2,
@@ -78,10 +79,10 @@ class TestRBAForecasts:
         mock_recent.assert_called_once()
         mock_scrape.assert_called_once()
     
-    @patch('rbapy.forecasts.check_rba_connection')
-    @patch('rbapy.forecasts._get_historical_forecasts')
-    @patch('rbapy.forecasts._get_recent_forecasts')
-    @patch('rbapy.forecasts._scrape_latest_forecasts')
+    @patch('rbadata.forecasts.check_rba_connection')
+    @patch('rbadata.forecasts._get_historical_forecasts')
+    @patch('rbadata.forecasts._get_recent_forecasts')
+    @patch('rbadata.forecasts._scrape_latest_forecasts')
     def test_rba_forecasts_latest_only(self, mock_scrape, mock_recent, mock_hist, mock_check):
         """Test getting only latest forecasts."""
         # Setup mocks with different forecast dates
@@ -90,7 +91,7 @@ class TestRBAForecasts:
         # Historical - old forecast date
         hist_data = pd.DataFrame({
             'forecast_date': [pd.Timestamp('2010-05-01')] * 2,
-            'date': pd.date_range('2010-06-01', periods=2, freq='QE'),
+            'date': pd.date_range('2010-06-01', periods=2, freq=get_pandas_freq_alias("Q")),
             'series': ['gdp_change'] * 2,
             'value': [3.5, 3.7],
             'series_desc': ['GDP'] * 2,
@@ -102,7 +103,7 @@ class TestRBAForecasts:
         # Recent - more recent forecast date
         recent_data = pd.DataFrame({
             'forecast_date': [pd.Timestamp('2023-05-01')] * 2,
-            'date': pd.date_range('2023-06-01', periods=2, freq='QE'),
+            'date': pd.date_range('2023-06-01', periods=2, freq=get_pandas_freq_alias("Q")),
             'series': ['cpi_annual'] * 2,
             'value': [5.8, 4.9],
             'series_desc': ['CPI'] * 2,
@@ -114,7 +115,7 @@ class TestRBAForecasts:
         # Latest - most recent forecast date
         latest_data = pd.DataFrame({
             'forecast_date': [pd.Timestamp('2024-08-01')] * 3,
-            'date': pd.date_range('2024-06-01', periods=3, freq='QE'),
+            'date': pd.date_range('2024-06-01', periods=3, freq=get_pandas_freq_alias("Q")),
             'series': ['gdp_change'] * 3,
             'value': [2.5, 2.6, 2.7],
             'series_desc': ['GDP'] * 3,
@@ -131,10 +132,10 @@ class TestRBAForecasts:
         assert len(result) == 3  # Only the latest 3 forecasts
         assert all(result['forecast_date'] == pd.Timestamp('2024-08-01'))
     
-    @patch('rbapy.forecasts.check_rba_connection')
-    @patch('rbapy.forecasts._get_historical_forecasts')
-    @patch('rbapy.forecasts._get_recent_forecasts')
-    @patch('rbapy.forecasts._scrape_latest_forecasts')
+    @patch('rbadata.forecasts.check_rba_connection')
+    @patch('rbadata.forecasts._get_historical_forecasts')
+    @patch('rbadata.forecasts._get_recent_forecasts')
+    @patch('rbadata.forecasts._scrape_latest_forecasts')
     def test_rba_forecasts_with_failures(self, mock_scrape, mock_recent, mock_hist, mock_check):
         """Test behavior when some sources fail."""
         # Setup mocks
@@ -146,7 +147,7 @@ class TestRBAForecasts:
         # Recent works
         recent_data = pd.DataFrame({
             'forecast_date': [pd.Timestamp('2023-05-01')] * 2,
-            'date': pd.date_range('2023-06-01', periods=2, freq='QE'),
+            'date': pd.date_range('2023-06-01', periods=2, freq=get_pandas_freq_alias("Q")),
             'series': ['cpi_annual'] * 2,
             'value': [5.8, 4.9],
             'series_desc': ['CPI'] * 2,
@@ -166,10 +167,10 @@ class TestRBAForecasts:
         assert len(result) == 2  # Only recent data
         assert all(result['series'] == 'cpi_annual')
     
-    @patch('rbapy.forecasts.check_rba_connection')
-    @patch('rbapy.forecasts._get_historical_forecasts')
-    @patch('rbapy.forecasts._get_recent_forecasts')
-    @patch('rbapy.forecasts._scrape_latest_forecasts')
+    @patch('rbadata.forecasts.check_rba_connection')
+    @patch('rbadata.forecasts._get_historical_forecasts')
+    @patch('rbadata.forecasts._get_recent_forecasts')
+    @patch('rbadata.forecasts._scrape_latest_forecasts')
     def test_rba_forecasts_all_sources_fail(self, mock_scrape, mock_recent, mock_hist, mock_check):
         """Test error when all sources fail."""
         # Setup mocks
@@ -181,20 +182,20 @@ class TestRBAForecasts:
         mock_scrape.side_effect = Exception("Scraping failed")
         
         # Should raise error
-        with pytest.raises(RBAPyError, match="Could not retrieve any forecast data"):
+        with pytest.raises(RBADataError, match="Could not retrieve any forecast data"):
             rba_forecasts()
     
-    @patch('rbapy.forecasts.check_rba_connection')
-    @patch('rbapy.forecasts._get_historical_forecasts')
-    @patch('rbapy.forecasts._get_recent_forecasts')
-    @patch('rbapy.forecasts._scrape_latest_forecasts')
+    @patch('rbadata.forecasts.check_rba_connection')
+    @patch('rbadata.forecasts._get_historical_forecasts')
+    @patch('rbadata.forecasts._get_recent_forecasts')
+    @patch('rbadata.forecasts._scrape_latest_forecasts')
     def test_rba_forecasts_duplicate_handling(self, mock_scrape, mock_recent, mock_hist, mock_check):
         """Test that duplicates are handled correctly."""
         # Setup mocks
         mock_check.return_value = None
         
         # Create overlapping data
-        base_date = pd.date_range('2023-06-01', periods=2, freq='QE')
+        base_date = pd.date_range('2023-06-01', periods=2, freq=get_pandas_freq_alias("Q"))
         
         # Historical - older forecast for same date/series
         hist_data = pd.DataFrame({
@@ -312,10 +313,10 @@ class TestScrapeLatestForecasts:
 class TestYearQtrCalculation:
     """Test year_qtr calculation."""
     
-    @patch('rbapy.forecasts.check_rba_connection')
-    @patch('rbapy.forecasts._get_historical_forecasts')
-    @patch('rbapy.forecasts._get_recent_forecasts')
-    @patch('rbapy.forecasts._scrape_latest_forecasts')
+    @patch('rbadata.forecasts.check_rba_connection')
+    @patch('rbadata.forecasts._get_historical_forecasts')
+    @patch('rbadata.forecasts._get_recent_forecasts')
+    @patch('rbadata.forecasts._scrape_latest_forecasts')
     def test_year_qtr_calculation(self, mock_scrape, mock_recent, mock_hist, mock_check):
         """Test that year_qtr is calculated correctly."""
         # Setup mocks

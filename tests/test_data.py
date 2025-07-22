@@ -7,13 +7,13 @@ import pandas as pd
 import json
 from pathlib import Path
 from unittest.mock import patch, mock_open, MagicMock
-from rbapy.data import get_table_list, get_series_list, _build_series_list
+from rbadata.data import get_table_list, get_series_list, _build_series_list
 
 
 class TestGetTableList:
     """Test the get_table_list function."""
     
-    @patch('rbapy.data._table_cache', None)
+    @patch('rbadata.data._table_cache', None)
     @patch('pathlib.Path.exists')
     @patch('builtins.open', new_callable=mock_open)
     def test_get_table_list_from_file(self, mock_file, mock_exists):
@@ -51,9 +51,9 @@ class TestGetTableList:
         # Check that file was opened
         mock_file.assert_called_once()
     
-    @patch('rbapy.data._table_cache', None)
+    @patch('rbadata.data._table_cache', None)
     @patch('pathlib.Path.exists')
-    @patch('rbapy.data.scrape_table_list')
+    @patch('rbadata.data.scrape_table_list')
     def test_get_table_list_scrape(self, mock_scrape, mock_exists):
         """Test scraping table list when file doesn't exist."""
         # Setup mocks
@@ -80,18 +80,18 @@ class TestGetTableList:
     def test_get_table_list_from_cache(self):
         """Test returning cached table list."""
         # Set up cache directly
-        import rbapy.data
+        import rbadata.data
         cached_data = pd.DataFrame({
             'no': ['X1', 'Y1'],
             'title': ['Cached X', 'Cached Y'],
             'url': ['url_x', 'url_y'],
             'current_or_historical': ['current'] * 2
         })
-        rbapy.data._table_cache = cached_data
+        rbadata.data._table_cache = cached_data
         
         # Call function (should not hit file or scrape)
         with patch('pathlib.Path.exists') as mock_exists:
-            with patch('rbapy.data.scrape_table_list') as mock_scrape:
+            with patch('rbadata.data.scrape_table_list') as mock_scrape:
                 result = get_table_list(refresh=False)
         
         # Verify cache was used
@@ -100,9 +100,9 @@ class TestGetTableList:
         mock_exists.assert_not_called()
         mock_scrape.assert_not_called()
     
-    @patch('rbapy.data._table_cache', None)
+    @patch('rbadata.data._table_cache', None)
     @patch('pathlib.Path.exists')
-    @patch('rbapy.data.scrape_table_list')
+    @patch('rbadata.data.scrape_table_list')
     def test_get_table_list_refresh(self, mock_scrape, mock_exists):
         """Test forcing refresh of table list."""
         # Setup mocks
@@ -125,9 +125,9 @@ class TestGetTableList:
         assert result['no'].iloc[0] == 'NEW1'
         mock_scrape.assert_called_once()
     
-    @patch('rbapy.data._table_cache', None)
+    @patch('rbadata.data._table_cache', None)
     @patch('pathlib.Path.exists')
-    @patch('rbapy.data.scrape_table_list')
+    @patch('rbadata.data.scrape_table_list')
     @patch('builtins.open', new_callable=mock_open)
     def test_get_table_list_save_error(self, mock_file, mock_scrape, mock_exists):
         """Test handling of save errors."""
@@ -148,7 +148,7 @@ class TestGetTableList:
 class TestGetSeriesList:
     """Test the get_series_list function."""
     
-    @patch('rbapy.data._series_cache', None)
+    @patch('rbadata.data._series_cache', None)
     @patch('pathlib.Path.exists')
     @patch('builtins.open', new_callable=mock_open)
     def test_get_series_list_from_file(self, mock_file, mock_exists):
@@ -185,9 +185,9 @@ class TestGetSeriesList:
         assert 'table_no' in result.columns
         assert 'frequency' in result.columns
     
-    @patch('rbapy.data._series_cache', None)
+    @patch('rbadata.data._series_cache', None)
     @patch('pathlib.Path.exists')
-    @patch('rbapy.data._build_series_list')
+    @patch('rbadata.data._build_series_list')
     def test_get_series_list_build(self, mock_build, mock_exists):
         """Test building series list when file doesn't exist."""
         # Setup mocks
@@ -212,17 +212,17 @@ class TestGetSeriesList:
     def test_get_series_list_from_cache(self):
         """Test returning cached series list."""
         # Set up cache directly
-        import rbapy.data
+        import rbadata.data
         cached_data = pd.DataFrame({
             'series_id': ['CACHED1'],
             'series': ['Cached Series'],
             'table_no': ['C1']
         })
-        rbapy.data._series_cache = cached_data
+        rbadata.data._series_cache = cached_data
         
         # Call function
         with patch('pathlib.Path.exists') as mock_exists:
-            with patch('rbapy.data._build_series_list') as mock_build:
+            with patch('rbadata.data._build_series_list') as mock_build:
                 result = get_series_list(refresh=False)
         
         # Verify cache was used
@@ -231,9 +231,9 @@ class TestGetSeriesList:
         mock_exists.assert_not_called()
         mock_build.assert_not_called()
     
-    @patch('rbapy.data._series_cache', None)
+    @patch('rbadata.data._series_cache', None)
     @patch('pathlib.Path.exists')
-    @patch('rbapy.data._build_series_list')
+    @patch('rbadata.data._build_series_list')
     def test_get_series_list_refresh(self, mock_build, mock_exists):
         """Test forcing refresh of series list."""
         # Setup mocks
@@ -305,13 +305,13 @@ class TestBuildSeriesList:
 class TestDataModuleIntegration:
     """Integration tests for data module."""
     
-    @patch('rbapy.data._table_cache', None)
-    @patch('rbapy.data._series_cache', None)
+    @patch('rbadata.data._table_cache', None)
+    @patch('rbadata.data._series_cache', None)
     def test_cache_persistence(self):
         """Test that cache persists between calls."""
         with patch('pathlib.Path.exists', return_value=False):
-            with patch('rbapy.data.scrape_table_list') as mock_scrape:
-                with patch('rbapy.data._build_series_list') as mock_build:
+            with patch('rbadata.data.scrape_table_list') as mock_scrape:
+                with patch('rbadata.data._build_series_list') as mock_build:
                     # Setup mocks
                     mock_scrape.return_value = pd.DataFrame({'no': ['A1']})
                     mock_build.return_value = pd.DataFrame({'series_id': ['S1']})

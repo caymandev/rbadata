@@ -5,13 +5,13 @@ Tests for browse functionality
 import pytest
 import pandas as pd
 from unittest.mock import patch, MagicMock
-from rbapy import browse_rba_tables, browse_rba_series
+from rbadata import browse_rba_tables, browse_rba_series
 
 
 class TestBrowseTables:
     """Test browse_rba_tables function."""
     
-    @patch('rbapy.browse.get_table_list')
+    @patch('rbadata.browse.get_table_list')
     def test_browse_all_tables(self, mock_get_tables):
         """Test browsing all tables."""
         # Create sample table data
@@ -33,7 +33,7 @@ class TestBrowseTables:
         assert len(result) == 2
         assert list(result.columns) == ['title', 'no', 'url', 'current_or_historical', 'readable']
     
-    @patch('rbapy.browse.get_table_list')
+    @patch('rbadata.browse.get_table_list')
     def test_browse_tables_with_search(self, mock_get_tables):
         """Test browsing tables with search filter."""
         # Create sample table data
@@ -53,7 +53,7 @@ class TestBrowseTables:
         assert len(result) == 2
         assert all('inflation' in title.lower() for title in result['title'])
     
-    @patch('rbapy.browse.get_table_list')
+    @patch('rbadata.browse.get_table_list')
     def test_browse_tables_refresh(self, mock_get_tables):
         """Test browsing tables with refresh."""
         sample_tables = pd.DataFrame({
@@ -75,7 +75,7 @@ class TestBrowseTables:
 class TestBrowseSeries:
     """Test browse_rba_series function."""
     
-    @patch('rbapy.browse.get_series_list')
+    @patch('rbadata.browse.get_series_list')
     def test_browse_all_series(self, mock_get_series):
         """Test browsing all series."""
         # Create sample series data
@@ -97,7 +97,7 @@ class TestBrowseSeries:
         assert isinstance(result, pd.DataFrame)
         assert len(result) == 2
     
-    @patch('rbapy.browse.get_series_list')
+    @patch('rbadata.browse.get_series_list')
     def test_browse_series_with_search(self, mock_get_series):
         """Test browsing series with search filter."""
         # Create sample series data
@@ -118,7 +118,7 @@ class TestBrowseSeries:
         assert len(result) == 1
         assert 'inflation' in result.iloc[0]['series'].lower()
     
-    @patch('rbapy.browse.get_series_list')
+    @patch('rbadata.browse.get_series_list')
     def test_browse_series_by_table(self, mock_get_series):
         """Test browsing series filtered by table number."""
         # Create sample series data

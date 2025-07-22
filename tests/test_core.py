@@ -5,8 +5,9 @@ Tests for core functionality
 import pytest
 import pandas as pd
 from unittest.mock import patch, MagicMock
-from rbapy import read_rba, read_rba_seriesid
-from rbapy.exceptions import RBAPyError
+from rbadata import read_rba, read_rba_seriesid
+from rbadata.utils import get_pandas_freq_alias
+from rbadata.exceptions import RBADataError
 
 
 class TestReadRBA:
@@ -14,18 +15,18 @@ class TestReadRBA:
     
     def test_read_rba_requires_input(self):
         """Test that read_rba requires either table_no or series_id."""
-        with pytest.raises(RBAPyError, match="Either 'table_no' or 'series_id' must be specified"):
+        with pytest.raises(RBADataError, match="Either 'table_no' or 'series_id' must be specified"):
             read_rba()
     
     def test_read_rba_not_both_inputs(self):
         """Test that read_rba doesn't accept both table_no and series_id."""
-        with pytest.raises(RBAPyError, match="Only one of 'table_no' or 'series_id' should be specified"):
+        with pytest.raises(RBADataError, match="Only one of 'table_no' or 'series_id' should be specified"):
             read_rba(table_no="g1", series_id="GCPIAG")
     
-    @patch('rbapy.core.check_rba_connection')
-    @patch('rbapy.core.get_rba_urls')
-    @patch('rbapy.core.download_rba')
-    @patch('rbapy.core.tidy_rba')
+    @patch('rbadata.core.check_rba_connection')
+    @patch('rbadata.core.get_rba_urls')
+    @patch('rbadata.core.download_rba')
+    @patch('rbadata.core.tidy_rba')
     def test_read_rba_single_table(self, mock_tidy, mock_download, mock_urls, mock_check):
         """Test reading a single table."""
         # Setup mocks
@@ -35,7 +36,7 @@ class TestReadRBA:
         
         # Create sample tidy data
         sample_data = pd.DataFrame({
-            'date': pd.date_range('2020-01-01', periods=3, freq='QE'),
+            'date': pd.date_range('2020-01-01', periods=3, freq=get_pandas_freq_alias("Q")),
             'series': ['CPI'] * 3,
             'series_id': ['GCPIAG'] * 3,
             'value': [100.0, 101.0, 102.0]
@@ -56,11 +57,11 @@ class TestReadRBA:
         assert len(result) == 3
         assert list(result.columns) == ['date', 'series', 'series_id', 'value']
     
-    @patch('rbapy.core.check_rba_connection')
-    @patch('rbapy.core.tables_from_seriesid')
-    @patch('rbapy.core.get_rba_urls')
-    @patch('rbapy.core.download_rba')
-    @patch('rbapy.core.tidy_rba')
+    @patch('rbadata.core.check_rba_connection')
+    @patch('rbadata.core.tables_from_seriesid')
+    @patch('rbadata.core.get_rba_urls')
+    @patch('rbadata.core.download_rba')
+    @patch('rbadata.core.tidy_rba')
     def test_read_rba_by_series_id(self, mock_tidy, mock_download, mock_urls, mock_tables, mock_check):
         """Test reading data by series ID."""
         # Setup mocks
@@ -71,7 +72,7 @@ class TestReadRBA:
         
         # Create sample data with multiple series
         sample_data = pd.DataFrame({
-            'date': pd.date_range('2020-01-01', periods=6, freq='QE'),
+            'date': pd.date_range('2020-01-01', periods=6, freq=get_pandas_freq_alias("Q")),
             'series': ['CPI'] * 3 + ['Other'] * 3,
             'series_id': ['GCPIAG'] * 3 + ['OTHER'] * 3,
             'value': [100.0, 101.0, 102.0, 200.0, 201.0, 202.0]
@@ -89,7 +90,7 @@ class TestReadRBA:
 class TestReadRBASeriesID:
     """Test the convenience function read_rba_seriesid."""
     
-    @patch('rbapy.core.read_rba')
+    @patch('rbadata.core.read_rba')
     def test_read_rba_seriesid(self, mock_read_rba):
         """Test that read_rba_seriesid calls read_rba correctly."""
         # Setup mock

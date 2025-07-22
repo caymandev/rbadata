@@ -7,14 +7,14 @@ from pathlib import Path
 import tempfile
 from unittest.mock import Mock, patch, MagicMock, mock_open
 import requests
-from rbapy.download import download_rba, _download_file, url_exists
-from rbapy.exceptions import RBAPyError
+from rbadata.download import download_rba, _download_file, url_exists
+from rbadata.exceptions import RBADataError
 
 
 class TestDownloadRBA:
     """Test the download_rba function."""
     
-    @patch('rbapy.download._download_file')
+    @patch('rbadata.download._download_file')
     @patch('builtins.open', new_callable=mock_open)
     def test_download_success(self, mock_file, mock_download):
         """Test successful file download."""
@@ -32,8 +32,8 @@ class TestDownloadRBA:
         mock_download.assert_called_once_with('https://example.com/table.xlsx')
         mock_file().write.assert_called_once_with(b'Excel file content')
     
-    @patch('rbapy.download._download_file')
-    @patch('rbapy.download.time.sleep')
+    @patch('rbadata.download._download_file')
+    @patch('rbadata.download.time.sleep')
     def test_download_with_retry(self, mock_sleep, mock_download):
         """Test download with retry on failure."""
         # First two attempts fail, third succeeds
@@ -53,20 +53,20 @@ class TestDownloadRBA:
         assert mock_sleep.call_count == 2  # Sleep between retries
         assert isinstance(result, Path)
     
-    @patch('rbapy.download._download_file')
-    @patch('rbapy.download.time.sleep')
+    @patch('rbadata.download._download_file')
+    @patch('rbadata.download.time.sleep')
     def test_download_failure_after_retries(self, mock_sleep, mock_download):
         """Test download failure after all retries."""
         # All attempts fail
         mock_download.side_effect = Exception("Network error")
         
-        with pytest.raises(RBAPyError, match="Failed to download file after 3 attempts"):
+        with pytest.raises(RBADataError, match="Failed to download file after 3 attempts"):
             download_rba('https://example.com/table.xlsx', 'G1')
         
         assert mock_download.call_count == 3
         assert mock_sleep.call_count == 2
     
-    @patch('rbapy.download._download_file')
+    @patch('rbadata.download._download_file')
     def test_download_creates_directory(self, mock_download):
         """Test that download creates temp directory if needed."""
         mock_response = Mock()
@@ -84,11 +84,11 @@ class TestDownloadFile:
     """Test the _download_file function."""
     
     @patch('requests.get')
-    @patch('rbapy.download.get_headers')
+    @patch('rbadata.download.get_headers')
     def test_download_file_success(self, mock_get_headers, mock_get):
         """Test successful file download."""
         # Setup mocks
-        mock_headers = {'User-Agent': 'rbapy'}
+        mock_headers = {'User-Agent': 'rbadata'}
         mock_get_headers.return_value = mock_headers
         
         mock_response = Mock()
@@ -108,7 +108,7 @@ class TestDownloadFile:
         )
     
     @patch('requests.get')
-    @patch('rbapy.download.get_headers')
+    @patch('rbadata.download.get_headers')
     def test_download_file_http_error(self, mock_get_headers, mock_get):
         """Test HTTP error handling."""
         mock_get_headers.return_value = {}
@@ -122,8 +122,8 @@ class TestDownloadFile:
             _download_file('https://example.com/missing.xlsx')
     
     @patch('requests.get')
-    @patch('rbapy.download.get_headers')
-    @patch('rbapy.download.get_download_method')
+    @patch('rbadata.download.get_headers')
+    @patch('rbadata.download.get_download_method')
     def test_download_file_with_custom_method(self, mock_get_method, mock_get_headers, mock_get):
         """Test download with custom method (wininet)."""
         mock_get_method.return_value = 'wininet'

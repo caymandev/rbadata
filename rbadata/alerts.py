@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Callable
 from datetime import datetime, time
 import pandas as pd
-from .exceptions import RBAPyError
+from .exceptions import RBADataError
 
 
 class RBAAlerts:
@@ -82,7 +82,7 @@ class RBAAlerts:
         """
         # Validate inputs
         if not any([table_no, series_id, release_type]):
-            raise RBAPyError(
+            raise RBADataError(
                 "Must specify at least one of: table_no, series_id, or release_type"
             )
         
@@ -123,7 +123,7 @@ class RBAAlerts:
             ID of the alert to remove
         """
         if alert_id not in self.alerts:
-            raise RBAPyError(f"Alert '{alert_id}' not found")
+            raise RBADataError(f"Alert '{alert_id}' not found")
         
         del self.alerts[alert_id]
         
@@ -149,7 +149,7 @@ class RBAAlerts:
     def enable_alert(self, alert_id: str):
         """Enable a specific alert."""
         if alert_id not in self.alerts:
-            raise RBAPyError(f"Alert '{alert_id}' not found")
+            raise RBADataError(f"Alert '{alert_id}' not found")
         
         self.alerts[alert_id]["enabled"] = True
         self._save_alerts()
@@ -157,7 +157,7 @@ class RBAAlerts:
     def disable_alert(self, alert_id: str):
         """Disable a specific alert."""
         if alert_id not in self.alerts:
-            raise RBAPyError(f"Alert '{alert_id}' not found")
+            raise RBADataError(f"Alert '{alert_id}' not found")
         
         self.alerts[alert_id]["enabled"] = False
         self._save_alerts()
@@ -300,7 +300,7 @@ class RBAAlerts:
     def _get_default_config_path(self) -> Path:
         """Get default configuration file path."""
         from pathlib import Path
-        config_dir = Path.home() / ".rbapy"
+        config_dir = Path.home() / ".rbadata"
         config_dir.mkdir(exist_ok=True)
         return config_dir / "alerts.json"
     

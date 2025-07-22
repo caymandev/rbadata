@@ -2,6 +2,6 @@ include *.yaml
 include *.yml
 include .coveragerc
 include Makefile
-recursive-include rbapy *.md
+recursive-include rbadata *.md
 recursive-include scripts *.py
 recursive-include tests *.py

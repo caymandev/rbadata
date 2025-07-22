@@ -7,7 +7,7 @@ from typing import Dict, List, Optional, Union
 import pandas as pd
 import numpy as np
 from datetime import datetime
-from .exceptions import RBAPyError
+from .exceptions import RBADataError
 from .utils import parse_date_string, is_rba_ts_format
 
 
@@ -65,7 +65,7 @@ def tidy_rba(
     
     # Combine all sheets
     if not all_data:
-        raise RBAPyError(f"No valid data found in table {table_no}")
+        raise RBADataError(f"No valid data found in table {table_no}")
     
     result = pd.concat(all_data, ignore_index=True)
     return result
@@ -291,7 +291,7 @@ def _tidy_special_table(
     """
     # This would implement special handling for tables like A1.1 and A3
     # For now, we'll raise an informative error
-    raise RBAPyError(
+    raise RBADataError(
         f"Table {table_no} has a non-standard format that requires special handling. "
         "This functionality is not yet implemented."
     )

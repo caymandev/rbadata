@@ -10,7 +10,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-from .exceptions import RBAPyError
+from .exceptions import RBADataError
 from .config import get_headers
 from .download import download_rba
 
@@ -90,7 +90,7 @@ class ChartPack:
         category_lower = category.lower().replace(" ", "-")
         
         if category_lower not in [c.lower().replace(" ", "-") for c in self._categories]:
-            raise RBAPyError(f"Category '{category}' not found. Available: {self._categories}")
+            raise RBADataError(f"Category '{category}' not found. Available: {self._categories}")
         
         # Return charts for this category
         return [c for c in self._charts if c["category"].lower().replace(" ", "-") == category_lower]
@@ -141,7 +141,7 @@ class ChartPack:
         # Determine output path
         if output_path is None:
             from tempfile import gettempdir
-            temp_dir = Path(gettempdir()) / "rbapy_charts"
+            temp_dir = Path(gettempdir()) / "rbadata_charts"
             temp_dir.mkdir(exist_ok=True)
             
             # Generate filename from URL or date
@@ -209,7 +209,7 @@ class ChartPack:
             response = requests.get(url, headers=get_headers(), timeout=30)
             response.raise_for_status()
         except requests.RequestException as e:
-            raise RBAPyError(f"Failed to access Chart Pack page: {str(e)}")
+            raise RBADataError(f"Failed to access Chart Pack page: {str(e)}")
         
         soup = BeautifulSoup(response.content, "html.parser")
         

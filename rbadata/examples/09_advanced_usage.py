@@ -1,5 +1,5 @@
 """
-Advanced Usage Examples for rbapy
+Advanced Usage Examples for rbadata
 ==================================
 
 This example demonstrates:
@@ -11,7 +11,7 @@ This example demonstrates:
 - Custom data pipelines
 """
 
-import rbapy
+import rbadata
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -25,9 +25,9 @@ except ImportError:
     print("Note: Install matplotlib for visualization examples")
 
 def main():
-    """Main function demonstrating advanced rbapy usage."""
+    """Main function demonstrating advanced rbadata usage."""
     
-    print("rbapy Advanced Usage Examples")
+    print("rbadata Advanced Usage Examples")
     print("=" * 50)
     
     # Example 1: Building an economic dashboard
@@ -60,7 +60,7 @@ def main():
     all_series = {}
     for series_id, name in series_ids.items():
         try:
-            data = rbapy.read_rba(series_id=series_id)
+            data = rbadata.read_rba(series_id=series_id)
             all_series[name] = data[['date', 'value']].set_index('date')['value']
             print(f"  ✓ {name}: {len(data)} observations")
         except Exception as e:
@@ -85,7 +85,7 @@ def main():
     print("-" * 50)
     
     # Download a table for quality checks
-    table_data = rbapy.read_rba(table_no="G1")
+    table_data = rbadata.read_rba(table_no="G1")
     
     quality_report = perform_quality_checks(table_data)
     
@@ -110,7 +110,7 @@ def main():
     print("Downloading multiple tables...")
     for table in tables_to_download:
         try:
-            data = rbapy.read_rba(table_no=table)
+            data = rbadata.read_rba(table_no=table)
             downloaded_data[table] = data
             print(f"  ✓ {table}: {len(data)} rows")
         except Exception as e:
@@ -131,11 +131,11 @@ def main():
     # Calculate real interest rate (Cash Rate - CPI inflation)
     try:
         # Get cash rate
-        cash_rate = rbapy.read_rba(series_id="FIRMMCRT")
+        cash_rate = rbadata.read_rba(series_id="FIRMMCRT")
         cash_rate_ts = cash_rate.set_index('date')['value']
         
         # Get CPI annual change
-        cpi_change = rbapy.read_rba(series_id="GCPIAGSAQP")
+        cpi_change = rbadata.read_rba(series_id="GCPIAGSAQP")
         cpi_ts = cpi_change.set_index('date')['value']
         
         # Calculate real rate
@@ -186,7 +186,7 @@ def main():
     # Analyze economic cycles using historical data
     try:
         # Get long-term GDP data
-        gdp_data = rbapy.read_rba(series_id="GGDPECCPGDP")
+        gdp_data = rbadata.read_rba(series_id="GGDPECCPGDP")
         
         # Identify recessions (simplified: negative growth)
         gdp_growth = gdp_data.set_index('date')['value']
@@ -218,19 +218,19 @@ def main():
     key_tables = ['G1', 'F1', 'H1']
     for table in key_tables:
         try:
-            integrated_data['rba_tables'][table] = rbapy.read_rba(table_no=table)
+            integrated_data['rba_tables'][table] = rbadata.read_rba(table_no=table)
         except:
             pass
     
     # Get forecasts
     try:
-        integrated_data['forecasts'] = rbapy.rba_forecasts(all_or_latest="latest")
+        integrated_data['forecasts'] = rbadata.rba_forecasts(all_or_latest="latest")
     except:
         pass
     
     # Get snapshots
     try:
-        integrated_data['snapshots'] = rbapy.get_economic_indicators()
+        integrated_data['snapshots'] = rbadata.get_economic_indicators()
     except:
         pass
     
@@ -258,7 +258,7 @@ def main():
     
     # Download multiple series at once
     series_list = ["GCPIAG", "GLFSURSA", "FIRMMCRT"]
-    batch_data = rbapy.read_rba(series_id=series_list)
+    batch_data = rbadata.read_rba(series_id=series_list)
     
     batch_time = (datetime.now() - start_time).total_seconds()
     print(f"  Batch download time: {batch_time:.2f} seconds")
@@ -271,7 +271,7 @@ def main():
     
     def cached_download(table_no):
         if table_no not in data_cache:
-            data_cache[table_no] = rbapy.read_rba(table_no=table_no)
+            data_cache[table_no] = rbadata.read_rba(table_no=table_no)
         return data_cache[table_no]
     
     # First call - downloads data
@@ -321,15 +321,15 @@ def build_economic_dashboard():
     
     try:
         # Key indicators
-        dashboard['indicators'] = rbapy.get_economic_indicators()
+        dashboard['indicators'] = rbadata.get_economic_indicators()
         
         # Latest forecasts
-        dashboard['forecasts'] = rbapy.rba_forecasts(all_or_latest="latest")
+        dashboard['forecasts'] = rbadata.rba_forecasts(all_or_latest="latest")
         
         # Recent data
-        dashboard['cpi'] = rbapy.read_rba(series_id="GCPIAG").tail(4)
-        dashboard['unemployment'] = rbapy.read_rba(series_id="GLFSURSA").tail(3)
-        dashboard['cash_rate'] = rbapy.read_rba(series_id="FIRMMCRT").tail(1)
+        dashboard['cpi'] = rbadata.read_rba(series_id="GCPIAG").tail(4)
+        dashboard['unemployment'] = rbadata.read_rba(series_id="GLFSURSA").tail(3)
+        dashboard['cash_rate'] = rbadata.read_rba(series_id="FIRMMCRT").tail(1)
         
         # Metadata
         dashboard['last_updated'] = datetime.now()
@@ -420,12 +420,12 @@ def run_data_pipeline(config):
     for source in config['sources']:
         try:
             if source['type'] == 'table':
-                data = rbapy.read_rba(table_no=source['id'])
+                data = rbadata.read_rba(table_no=source['id'])
                 if 'series' in source:
                     data = data[data['series_id'] == source['series']]
                 results[source['id']] = data
             elif source['type'] == 'forecast':
-                data = rbapy.rba_forecasts(all_or_latest="latest")
+                data = rbadata.rba_forecasts(all_or_latest="latest")
                 if 'series' in source:
                     data = data[data['series'] == source['series']]
                 results['forecast_' + source['series']] = data

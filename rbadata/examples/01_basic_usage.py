@@ -1,8 +1,8 @@
 """
-Basic Usage Examples for rbapy
+Basic Usage Examples for rbadata
 ================================
 
-This example demonstrates the fundamental features of rbapy:
+This example demonstrates the fundamental features of rbadata:
 - Reading single tables
 - Reading multiple tables
 - Reading by series ID
@@ -10,13 +10,13 @@ This example demonstrates the fundamental features of rbapy:
 - Basic data manipulation
 """
 
-import rbapy
+import rbadata
 import pandas as pd
 
 def main():
-    """Main function demonstrating basic rbapy usage."""
+    """Main function demonstrating basic rbadata usage."""
     
-    print("rbapy Basic Usage Examples")
+    print("rbadata Basic Usage Examples")
     print("=" * 50)
     
     # Example 1: Read a single RBA table
@@ -25,7 +25,7 @@ def main():
     
     # Download table G1 which contains CPI data
     # This returns a pandas DataFrame with all series in the table
-    cpi_table = rbapy.read_rba(table_no="g1")
+    cpi_table = rbadata.read_rba(table_no="g1")
     
     # Display basic information about the data
     print(f"Shape of data: {cpi_table.shape}")
@@ -49,7 +49,7 @@ def main():
     
     # You can read multiple tables in a single call
     # This is more efficient than multiple separate calls
-    multi_tables = rbapy.read_rba(table_no=["a1", "f1"])
+    multi_tables = rbadata.read_rba(table_no=["a1", "f1"])
     
     print(f"Total rows from multiple tables: {len(multi_tables)}")
     
@@ -65,7 +65,7 @@ def main():
     
     # If you know the specific series ID you want, you can request it directly
     # GCPIAG is the Consumer Price Index - All Groups
-    cpi_series = rbapy.read_rba(series_id="GCPIAG")
+    cpi_series = rbadata.read_rba(series_id="GCPIAG")
     
     print(f"Series: {cpi_series['series'].iloc[0]}")
     print(f"Number of observations: {len(cpi_series)}")
@@ -82,7 +82,7 @@ def main():
     print("-" * 50)
     
     # This is equivalent to read_rba(series_id=...)
-    unemployment = rbapy.read_rba_seriesid("GLFSURSA")
+    unemployment = rbadata.read_rba_seriesid("GLFSURSA")
     
     print(f"Series: {unemployment['series'].iloc[0]}")
     print(f"Latest unemployment rate: {unemployment['value'].iloc[-1]}%")
@@ -97,7 +97,7 @@ def main():
     # Use cur_hist parameter to specify which one you want
     try:
         # Try to read historical version of table A1
-        hist_data = rbapy.read_rba(table_no="a1", cur_hist="historical")
+        hist_data = rbadata.read_rba(table_no="a1", cur_hist="historical")
         print(f"Historical data available with {len(hist_data)} rows")
         print(f"Date range: {hist_data['date'].min()} to {hist_data['date'].max()}")
     except Exception as e:
@@ -142,7 +142,7 @@ def main():
     
     try:
         # Try to read a non-existent table
-        bad_data = rbapy.read_rba(table_no="xyz123")
+        bad_data = rbadata.read_rba(table_no="xyz123")
     except Exception as e:
         print(f"Error caught: {e}")
         print("The package provides clear error messages for invalid inputs")

@@ -10,14 +10,14 @@ This example demonstrates how to:
 - Create custom inflation analyses
 """
 
-import rbapy
+import rbadata
 import pandas as pd
 from datetime import datetime
 
 def main():
     """Main function demonstrating inflation calculator features."""
     
-    print("rbapy Inflation Calculator Examples")
+    print("rbadata Inflation Calculator Examples")
     print("=" * 50)
     
     # Example 1: Basic inflation calculation
@@ -30,7 +30,7 @@ def main():
     to_year = "2023"
     
     # Using the convenience function
-    adjusted_value = rbapy.inflation_calculator(original_amount, from_year, to_year)
+    adjusted_value = rbadata.inflation_calculator(original_amount, from_year, to_year)
     
     print(f"${original_amount} in {from_year} is equivalent to ${adjusted_value:.2f} in {to_year}")
     print(f"That's an increase of {adjusted_value - original_amount:.2f} ({(adjusted_value/original_amount - 1)*100:.1f}%)")
@@ -41,7 +41,7 @@ def main():
     print("-" * 50)
     
     # Create calculator instance (loads CPI data once)
-    calc = rbapy.InflationCalculator()
+    calc = rbadata.InflationCalculator()
     
     # Calculate values for multiple amounts
     amounts = [100, 1000, 10000, 50000]

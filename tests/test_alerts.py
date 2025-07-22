@@ -8,8 +8,8 @@ import json
 from pathlib import Path
 from datetime import datetime
 from unittest.mock import patch, Mock, MagicMock, mock_open
-from rbapy.alerts import RBAAlerts, create_alert
-from rbapy.exceptions import RBAPyError
+from rbadata.alerts import RBAAlerts, create_alert
+from rbadata.exceptions import RBADataError
 
 
 class TestRBAAlerts:
@@ -17,7 +17,7 @@ class TestRBAAlerts:
     
     @patch('pathlib.Path.mkdir')
     @patch('pathlib.Path.home')
-    @patch('rbapy.alerts.RBAAlerts._load_alerts')
+    @patch('rbadata.alerts.RBAAlerts._load_alerts')
     def test_init_default_config(self, mock_load, mock_home, mock_mkdir):
         """Test initialization with default config path."""
         mock_home.return_value = Path('/mock/home')
@@ -25,12 +25,12 @@ class TestRBAAlerts:
         
         alerts = RBAAlerts()
         
-        assert '/mock/home/.rbapy/alerts.json' in str(alerts.config_file)
+        assert '/mock/home/.rbadata/alerts.json' in str(alerts.config_file)
         assert alerts.alerts == {}
         assert alerts._callbacks == {}
         assert alerts._last_check == {}
     
-    @patch('rbapy.alerts.RBAAlerts._load_alerts')
+    @patch('rbadata.alerts.RBAAlerts._load_alerts')
     def test_init_custom_config(self, mock_load):
         """Test initialization with custom config file."""
         mock_load.return_value = {'alert1': {'id': 'alert1'}}
@@ -40,8 +40,8 @@ class TestRBAAlerts:
         assert alerts.config_file == '/custom/path/alerts.json'
         assert 'alert1' in alerts.alerts
     
-    @patch('rbapy.alerts.RBAAlerts._save_alerts')
-    @patch('rbapy.alerts.RBAAlerts._generate_alert_id')
+    @patch('rbadata.alerts.RBAAlerts._save_alerts')
+    @patch('rbadata.alerts.RBAAlerts._generate_alert_id')
     def test_add_alert_table(self, mock_gen_id, mock_save):
         """Test adding an alert for a table."""
         mock_gen_id.return_value = 'test123'
@@ -59,8 +59,8 @@ class TestRBAAlerts:
         assert alerts.alerts['test123']['enabled'] is True
         mock_save.assert_called_once()
     
-    @patch('rbapy.alerts.RBAAlerts._save_alerts')
-    @patch('rbapy.alerts.RBAAlerts._generate_alert_id')
+    @patch('rbadata.alerts.RBAAlerts._save_alerts')
+    @patch('rbadata.alerts.RBAAlerts._generate_alert_id')
     def test_add_alert_series(self, mock_gen_id, mock_save):
         """Test adding an alert for a series."""
         mock_gen_id.return_value = 'test456'
@@ -75,8 +75,8 @@ class TestRBAAlerts:
         assert alerts.alerts['test456']['series_id'] == 'GCPIAG'
         assert alerts.alerts['test456']['table_no'] is None
     
-    @patch('rbapy.alerts.RBAAlerts._save_alerts')
-    @patch('rbapy.alerts.RBAAlerts._generate_alert_id')
+    @patch('rbadata.alerts.RBAAlerts._save_alerts')
+    @patch('rbadata.alerts.RBAAlerts._generate_alert_id')
     def test_add_alert_release_type(self, mock_gen_id, mock_save):
         """Test adding an alert for a release type."""
         mock_gen_id.return_value = 'test789'
@@ -94,11 +94,11 @@ class TestRBAAlerts:
         """Test error when no target specified."""
         alerts = RBAAlerts()
         
-        with pytest.raises(RBAPyError, match="Must specify at least one"):
+        with pytest.raises(RBADataError, match="Must specify at least one"):
             alerts.add_alert(name='Invalid Alert')
     
-    @patch('rbapy.alerts.RBAAlerts._save_alerts')
-    @patch('rbapy.alerts.RBAAlerts._generate_alert_id')
+    @patch('rbadata.alerts.RBAAlerts._save_alerts')
+    @patch('rbadata.alerts.RBAAlerts._generate_alert_id')
     def test_add_alert_with_callback(self, mock_gen_id, mock_save):
         """Test adding an alert with callback."""
         mock_gen_id.return_value = 'test_cb'
@@ -114,7 +114,7 @@ class TestRBAAlerts:
         assert 'test_cb' in alerts._callbacks
         assert alerts._callbacks['test_cb'] == mock_callback
     
-    @patch('rbapy.alerts.RBAAlerts._save_alerts')
+    @patch('rbadata.alerts.RBAAlerts._save_alerts')
     def test_remove_alert_success(self, mock_save):
         """Test removing an existing alert."""
         alerts = RBAAlerts()
@@ -131,7 +131,7 @@ class TestRBAAlerts:
         """Test removing non-existent alert."""
         alerts = RBAAlerts()
         
-        with pytest.raises(RBAPyError, match="Alert 'nonexistent' not found"):
+        with pytest.raises(RBADataError, match="Alert 'nonexistent' not found"):
             alerts.remove_alert('nonexistent')
     
     def test_list_alerts_empty(self):
@@ -170,7 +170,7 @@ class TestRBAAlerts:
         assert 'enabled' in result.columns
         assert set(result.index) == {'alert1', 'alert2'}
     
-    @patch('rbapy.alerts.RBAAlerts._save_alerts')
+    @patch('rbadata.alerts.RBAAlerts._save_alerts')
     def test_enable_alert(self, mock_save):
         """Test enabling an alert."""
         alerts = RBAAlerts()
@@ -185,10 +185,10 @@ class TestRBAAlerts:
         """Test enabling non-existent alert."""
         alerts = RBAAlerts()
         
-        with pytest.raises(RBAPyError, match="Alert 'nonexistent' not found"):
+        with pytest.raises(RBADataError, match="Alert 'nonexistent' not found"):
             alerts.enable_alert('nonexistent')
     
-    @patch('rbapy.alerts.RBAAlerts._save_alerts')
+    @patch('rbadata.alerts.RBAAlerts._save_alerts')
     def test_disable_alert(self, mock_save):
         """Test disabling an alert."""
         alerts = RBAAlerts()
@@ -199,8 +199,8 @@ class TestRBAAlerts:
         assert alerts.alerts['test123']['enabled'] is False
         mock_save.assert_called_once()
     
-    @patch('rbapy.alerts.RBAAlerts._trigger_alert')
-    @patch('rbapy.alerts.RBAAlerts._has_new_release')
+    @patch('rbadata.alerts.RBAAlerts._trigger_alert')
+    @patch('rbadata.alerts.RBAAlerts._has_new_release')
     def test_check_for_updates(self, mock_has_new, mock_trigger):
         """Test checking for updates."""
         alerts = RBAAlerts()
@@ -275,7 +275,7 @@ class TestRBAAlerts:
         # Currently always returns False
         assert alerts._has_new_release({'id': 'test'}) is False
     
-    @patch('rbapy.alerts.RBAAlerts._save_alerts')
+    @patch('rbadata.alerts.RBAAlerts._save_alerts')
     def test_trigger_alert(self, mock_save):
         """Test triggering an alert."""
         alerts = RBAAlerts()
@@ -296,7 +296,7 @@ class TestRBAAlerts:
         mock_save.assert_called_once()
         mock_callback.assert_called_once()
     
-    @patch('rbapy.alerts.RBAAlerts._save_alerts')
+    @patch('rbadata.alerts.RBAAlerts._save_alerts')
     @patch('builtins.print')
     def test_trigger_alert_callback_error(self, mock_print, mock_save):
         """Test triggering alert with callback error."""
@@ -335,11 +335,11 @@ class TestRBAAlerts:
         """Test getting default config path."""
         mock_home.return_value = Path('/mock/home')
         
-        with patch('rbapy.alerts.RBAAlerts._load_alerts', return_value={}):
+        with patch('rbadata.alerts.RBAAlerts._load_alerts', return_value={}):
             alerts = RBAAlerts()
             config_path = alerts._get_default_config_path()
         
-        assert str(config_path) == '/mock/home/.rbapy/alerts.json'
+        assert str(config_path) == '/mock/home/.rbadata/alerts.json'
     
     @patch('pathlib.Path.exists')
     def test_load_alerts_no_file(self, mock_exists):
@@ -400,7 +400,7 @@ class TestRBAAlerts:
 class TestCreateAlert:
     """Test the create_alert convenience function."""
     
-    @patch('rbapy.alerts.RBAAlerts.add_alert')
+    @patch('rbadata.alerts.RBAAlerts.add_alert')
     def test_create_alert_table(self, mock_add):
         """Test creating alert for table."""
         mock_add.return_value = 'test123'
@@ -418,7 +418,7 @@ class TestCreateAlert:
             name='CPI Alert'
         )
     
-    @patch('rbapy.alerts.RBAAlerts.add_alert')
+    @patch('rbadata.alerts.RBAAlerts.add_alert')
     def test_create_alert_series(self, mock_add):
         """Test creating alert for series."""
         mock_add.return_value = 'test456'
@@ -436,7 +436,7 @@ class TestCreateAlert:
             name='Inflation Series'
         )
     
-    @patch('rbapy.alerts.RBAAlerts.add_alert')
+    @patch('rbadata.alerts.RBAAlerts.add_alert')
     def test_create_alert_release_type(self, mock_add):
         """Test creating alert for release type."""
         mock_add.return_value = 'test789'

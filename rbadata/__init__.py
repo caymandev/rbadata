@@ -1,5 +1,5 @@
 """
-rbapy - Download and tidy data from the Reserve Bank of Australia
+rbadata - Download and tidy data from the Reserve Bank of Australia
 """
 
 __version__ = "0.1.0"

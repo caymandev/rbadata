@@ -10,14 +10,14 @@ This example demonstrates how to:
 - Download snapshot PDFs
 """
 
-import rbapy
+import rbadata
 import pandas as pd
 from pathlib import Path
 
 def main():
     """Main function demonstrating Snapshots functionality."""
     
-    print("rbapy Economic Snapshots Examples")
+    print("rbadata Economic Snapshots Examples")
     print("=" * 50)
     
     # Example 1: Access Snapshots
@@ -25,10 +25,10 @@ def main():
     print("-" * 50)
     
     # Get Snapshots instance
-    snapshots = rbapy.get_snapshots()
+    snapshots = rbadata.get_snapshots()
     
     # Alternative: Create instance directly
-    # snapshots = rbapy.Snapshots()
+    # snapshots = rbadata.Snapshots()
     
     print("Snapshots instance created successfully")
     print("\nRBA provides three types of snapshots:")
@@ -70,7 +70,7 @@ def main():
     
     # Using convenience function
     print("\n\nUsing convenience function:")
-    quick_indicators = rbapy.get_economic_indicators()
+    quick_indicators = rbadata.get_economic_indicators()
     print(f"Retrieved {len(quick_indicators)} indicators")
     
     

@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from unittest.mock import Mock, patch, MagicMock
-from rbapy.tidy import (
+from rbadata.tidy import (
     tidy_rba,
     _tidy_normal_sheet,
     _find_header_row,
@@ -16,14 +16,15 @@ from rbapy.tidy import (
     _extract_series_ids,
     _tidy_special_table
 )
-from rbapy.exceptions import RBAPyError
+from rbadata.utils import get_pandas_freq_alias
+from rbadata.exceptions import RBADataError
 
 
 class TestTidyRBA:
     """Test the main tidy_rba function."""
     
-    @patch('rbapy.tidy.pd.ExcelFile')
-    @patch('rbapy.tidy.is_rba_ts_format')
+    @patch('rbadata.tidy.pd.ExcelFile')
+    @patch('rbadata.tidy.is_rba_ts_format')
     def test_tidy_rba_normal_table(self, mock_is_rba_ts, mock_excel_file):
         """Test tidying a normal RBA table."""
         # Setup mock Excel file
@@ -44,9 +45,9 @@ class TestTidyRBA:
         mock_is_rba_ts.return_value = True
         
         # Mock _tidy_normal_sheet to return processed data
-        with patch('rbapy.tidy._tidy_normal_sheet') as mock_tidy_sheet:
+        with patch('rbadata.tidy._tidy_normal_sheet') as mock_tidy_sheet:
             mock_tidy_sheet.return_value = pd.DataFrame({
-                'date': pd.date_range('2020-03-31', periods=3, freq='QE'),
+                'date': pd.date_range('2020-03-31', periods=3, freq=get_pandas_freq_alias("Q")),
                 'series': ['CPI'] * 3,
                 'value': [100.0, 101.0, 102.0]
             })
@@ -60,7 +61,7 @@ class TestTidyRBA:
             assert 'date' in result.columns
             assert 'value' in result.columns
     
-    @patch('rbapy.tidy.pd.ExcelFile')
+    @patch('rbadata.tidy.pd.ExcelFile')
     def test_tidy_rba_special_table(self, mock_excel_file):
         """Test handling of special table formats."""
         # Setup mock
@@ -69,11 +70,11 @@ class TestTidyRBA:
         mock_excel_file.return_value = mock_xl
         
         # Test special table handling
-        with pytest.raises(RBAPyError, match="non-standard format"):
+        with pytest.raises(RBADataError, match="non-standard format"):
             tidy_rba(Path('/tmp/test.xlsx'), 'A1.1', 'http://example.com')
     
-    @patch('rbapy.tidy.pd.ExcelFile')
-    @patch('rbapy.tidy.is_rba_ts_format')
+    @patch('rbadata.tidy.pd.ExcelFile')
+    @patch('rbadata.tidy.is_rba_ts_format')
     def test_tidy_rba_no_valid_data(self, mock_is_rba_ts, mock_excel_file):
         """Test error when no valid data found."""
         # Setup mock
@@ -85,7 +86,7 @@ class TestTidyRBA:
         pd.read_excel = Mock(return_value=pd.DataFrame())
         
         # Should raise error
-        with pytest.raises(RBAPyError, match="No valid data found"):
+        with pytest.raises(RBADataError, match="No valid data found"):
             tidy_rba(Path('/tmp/test.xlsx'), 'G1', 'http://example.com')
 
 
@@ -109,8 +110,8 @@ class TestTidyNormalSheet:
         # Add column names to make the data consistent
         df.columns = [0, 1, 2]
         
-        with patch('rbapy.tidy._find_header_row', return_value=5):
-            with patch('rbapy.tidy._extract_metadata') as mock_metadata:
+        with patch('rbadata.tidy._find_header_row', return_value=5):
+            with patch('rbadata.tidy._extract_metadata') as mock_metadata:
                 mock_metadata.return_value = {
                     'title': 'Consumer Price Index',
                     'frequency': 'Quarterly',
@@ -120,7 +121,7 @@ class TestTidyNormalSheet:
                     'series_type': 'Original'
                 }
                 
-                with patch('rbapy.tidy._extract_series_ids') as mock_series_ids:
+                with patch('rbadata.tidy._extract_series_ids') as mock_series_ids:
                     mock_series_ids.return_value = {
                         1: 'GCPIAG',  # Column index to series ID
                         2: 'GCPITC'
@@ -279,5 +280,5 @@ class TestTidySpecialTable:
         """Test that special tables raise appropriate error."""
         mock_xl = MagicMock()
         
-        with pytest.raises(RBAPyError, match="non-standard format"):
+        with pytest.raises(RBADataError, match="non-standard format"):
             _tidy_special_table(mock_xl, 'A1.1', 'http://example.com', 'current')

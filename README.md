@@ -1,4 +1,4 @@
-# rbapy
+# rbadata
 
 A Python package to download and tidy data from the Reserve Bank of Australia (RBA).
 
@@ -6,8 +6,8 @@ This package is a Python implementation inspired by the R package `readrba`, pro
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Coverage](https://img.shields.io/badge/coverage-97%25-brightgreen)](https://github.com/caymandev/rbapy)
-[![Tests](https://github.com/caymandev/rbapy/actions/workflows/tests.yml/badge.svg)](https://github.com/caymandev/rbapy/actions/workflows/tests.yml)
+[![Coverage](https://img.shields.io/badge/coverage-97%25-brightgreen)](https://github.com/caymandev/rbadata)
+[![Tests](https://github.com/caymandev/rbadata/actions/workflows/tests.yml/badge.svg)](https://github.com/caymandev/rbadata/actions/workflows/tests.yml)
 
 ## Table of Contents
 
@@ -23,37 +23,37 @@ This package is a Python implementation inspired by the R package `readrba`, pro
 ## Installation
 
 ```bash
-pip install rbapy
+pip install rbadata
 ```
 
 For development installation:
 
 ```bash
-git clone https://github.com/caymandev/rbapy.git
-cd rbapy
+git clone https://github.com/caymandev/rbadata.git
+cd rbadata
 pip install -e ".[dev]"
 ```
 
 ## Quick Start
 
 ```python
-import rbapy
+import rbadata
 
 # Read a single RBA table
-cpi_table = rbapy.read_rba(table_no="g1")
+cpi_table = rbadata.read_rba(table_no="g1")
 
 # Read multiple tables
-data = rbapy.read_rba(table_no=["a1", "g1"])
+data = rbadata.read_rba(table_no=["a1", "g1"])
 
 # Read by series ID
-cpi_series = rbapy.read_rba(series_id="GCPIAG")
+cpi_series = rbadata.read_rba(series_id="GCPIAG")
 
 # Get RBA forecasts
-forecasts = rbapy.rba_forecasts()
+forecasts = rbadata.rba_forecasts()
 
 # Browse available tables and series
-tables = rbapy.browse_rba_tables()
-series = rbapy.browse_rba_series("inflation")
+tables = rbadata.browse_rba_tables()
+series = rbadata.browse_rba_series("inflation")
 ```
 
 ## Advanced Usage
@@ -62,7 +62,7 @@ series = rbapy.browse_rba_series("inflation")
 
 ```python
 # Calculate inflation-adjusted values
-calc = rbapy.InflationCalculator()
+calc = rbadata.InflationCalculator()
 
 # How much was $100 in 2000 worth in 2023?
 value_2023 = calc.calculate_value(100, "2000", "2023")
@@ -71,14 +71,14 @@ value_2023 = calc.calculate_value(100, "2000", "2023")
 inflation_rate = calc.calculate_inflation_rate("2020", "2023")
 
 # Quick calculation
-adjusted_value = rbapy.inflation_calculator(1000, "2010", "2023")
+adjusted_value = rbadata.inflation_calculator(1000, "2010", "2023")
 ```
 
 ### Chart Pack
 
 ```python
 # Access RBA Chart Pack
-chart_pack = rbapy.get_chart_pack()
+chart_pack = rbadata.get_chart_pack()
 
 # Get available categories
 categories = chart_pack.get_categories()
@@ -94,10 +94,10 @@ chart_pack.download_chart_pack()
 
 ```python
 # Get economic indicators snapshot
-indicators = rbapy.get_economic_indicators()
+indicators = rbadata.get_economic_indicators()
 
 # Access snapshots
-snapshots = rbapy.get_snapshots()
+snapshots = rbadata.get_snapshots()
 snapshots.download_snapshot("economic-indicators")
 ```
 
@@ -105,10 +105,10 @@ snapshots.download_snapshot("economic-indicators")
 
 ```python
 # Look up term definitions
-definition = rbapy.define("CPI")
+definition = rbadata.define("CPI")
 
 # Search for terms
-glossary = rbapy.get_glossary()
+glossary = rbadata.get_glossary()
 inflation_terms = glossary.search("inflation")
 ```
 
@@ -158,18 +158,18 @@ See the [examples directory](examples/) for detailed code examples with inline d
 
 ```python
 # Monitor inflation
-inflation = rbapy.read_rba(series_id="GCPIAG")
+inflation = rbadata.read_rba(series_id="GCPIAG")
 current_cpi = inflation.iloc[-1]['value']
 
 # Track interest rates
-cash_rate = rbapy.read_cashrate()
+cash_rate = rbadata.read_cashrate()
 current_rate = cash_rate.iloc[-1]['value']
 
 # Analyze employment
-unemployment = rbapy.read_rba(series_id="GLFSURSA")
+unemployment = rbadata.read_rba(series_id="GLFSURSA")
 
 # Get latest economic forecasts
-latest_forecasts = rbapy.rba_forecasts(all_or_latest="latest")
+latest_forecasts = rbadata.rba_forecasts(all_or_latest="latest")
 ```
 
 ## Requirements
@@ -189,7 +189,7 @@ The package includes comprehensive tests with high coverage. To run tests locall
 pytest tests/
 
 # Run tests with coverage report
-pytest tests/ --cov=rbapy --cov-report=term-missing
+pytest tests/ --cov=rbadata --cov-report=term-missing
 
 # Generate coverage badge locally
 python scripts/generate_coverage_badge.py --update-readme
@@ -212,8 +212,8 @@ Before submitting:
 1. Run the test suite and ensure all tests pass
 2. Add tests for any new functionality
 3. Ensure code coverage remains high
-4. Run linting: `flake8 rbapy/`
-5. Format code: `black rbapy/`
+4. Run linting: `flake8 rbadata/`
+5. Format code: `black rbadata/`
 
 ## License
 

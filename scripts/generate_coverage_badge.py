@@ -14,7 +14,7 @@ def get_coverage_percentage():
     try:
         # Run pytest with coverage
         result = subprocess.run(
-            ["pytest", "tests/", "--cov=rbapy", "--cov-report=json", "--quiet"],
+            ["pytest", "tests/", "--cov=rbadata", "--cov-report=json", "--quiet"],
             capture_output=True,
             text=True
         )
@@ -79,7 +79,7 @@ def update_readme_badge(badge_url):
     
     # Pattern for coverage badge
     pattern = r'\[!\[coverage\]\(.*?\)\]\(.*?\)'
-    replacement = f'[![Coverage]({badge_url})](https://github.com/caymandev/rbapy)'
+    replacement = f'[![Coverage]({badge_url})](https://github.com/caymandev/rbadata)'
     
     if re.search(pattern, content, re.IGNORECASE):
         # Replace existing badge
@@ -125,7 +125,7 @@ def main():
     else:
         print("\nTo update README.md, run with --update-readme flag")
         print(f"\nOr manually add this badge to your README:")
-        print(f"[![Coverage]({badge_url})](https://github.com/caymandev/rbapy)")
+        print(f"[![Coverage]({badge_url})](https://github.com/caymandev/rbadata)")
 
 
 if __name__ == "__main__":

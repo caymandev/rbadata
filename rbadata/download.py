@@ -8,7 +8,7 @@ import tempfile
 from pathlib import Path
 from typing import Optional
 import requests
-from .exceptions import RBAPyError
+from .exceptions import RBADataError
 from .config import get_download_method, get_headers
 
 
@@ -30,11 +30,11 @@ def download_rba(url: str, table_no: str) -> Path:
         
     Raises
     ------
-    RBAPyError
+    RBADataError
         If the download fails after retries
     """
     # Create temporary directory
-    temp_dir = Path(tempfile.gettempdir()) / "rbapy_downloads"
+    temp_dir = Path(tempfile.gettempdir()) / "rbadata_downloads"
     temp_dir.mkdir(exist_ok=True)
     
     # Generate filename
@@ -60,7 +60,7 @@ def download_rba(url: str, table_no: str) -> Path:
                 print(f"Download failed, retrying in {retry_delay} seconds...")
                 time.sleep(retry_delay)
             else:
-                raise RBAPyError(f"Failed to download file after {max_retries} attempts: {str(e)}")
+                raise RBADataError(f"Failed to download file after {max_retries} attempts: {str(e)}")
 
 
 def _download_file(url: str) -> requests.Response:

@@ -6,19 +6,20 @@ import pytest
 import pandas as pd
 from unittest.mock import patch, Mock
 from datetime import datetime
-from rbapy.cash_rate import read_cashrate
-from rbapy.exceptions import RBAPyError
+from rbadata.cash_rate import read_cashrate
+from rbadata.utils import get_pandas_freq_alias
+from rbadata.exceptions import RBADataError
 
 
 class TestReadCashRate:
     """Test the read_cashrate function."""
     
-    @patch('rbapy.cash_rate.read_rba')
+    @patch('rbadata.cash_rate.read_rba')
     def test_read_cashrate_target_default(self, mock_read_rba):
         """Test reading target cash rate (default)."""
         # Setup mock data
         mock_data = pd.DataFrame({
-            'date': pd.date_range('2023-01-01', periods=5, freq='ME'),
+            'date': pd.date_range('2023-01-01', periods=5, freq=get_pandas_freq_alias("M")),
             'value': [3.10, 3.35, 3.60, 3.60, 3.85],
             'series': ['Cash Rate Target'] * 5,
             'series_id': ['FIRMMCRT'] * 5,
@@ -39,7 +40,7 @@ class TestReadCashRate:
         assert result['value'].iloc[0] == 3.10
         assert result['value'].iloc[-1] == 3.85
     
-    @patch('rbapy.cash_rate.read_rba')
+    @patch('rbadata.cash_rate.read_rba')
     def test_read_cashrate_interbank(self, mock_read_rba):
         """Test reading interbank cash rate."""
         # Setup mock data
@@ -62,15 +63,15 @@ class TestReadCashRate:
     
     def test_read_cashrate_invalid_type(self):
         """Test error with invalid cash rate type."""
-        with pytest.raises(RBAPyError, match="Invalid cash rate type: invalid"):
+        with pytest.raises(RBADataError, match="Invalid cash rate type: invalid"):
             read_cashrate(type='invalid')
     
-    @patch('rbapy.cash_rate.read_rba')
+    @patch('rbadata.cash_rate.read_rba')
     def test_read_cashrate_with_date_filter(self, mock_read_rba):
         """Test filtering by date range."""
         # Setup mock data
         mock_data = pd.DataFrame({
-            'date': pd.date_range('2023-01-01', periods=12, freq='ME'),
+            'date': pd.date_range('2023-01-01', periods=12, freq=get_pandas_freq_alias("M")),
             'value': list(range(12)),
             'series': ['Cash Rate Target'] * 12,
             'series_id': ['FIRMMCRT'] * 12,
@@ -89,12 +90,12 @@ class TestReadCashRate:
         assert result['date'].min() >= pd.Timestamp('2023-03-01')
         assert result['date'].max() <= pd.Timestamp('2023-06-30')
     
-    @patch('rbapy.cash_rate.read_rba')
+    @patch('rbadata.cash_rate.read_rba')
     def test_read_cashrate_start_date_only(self, mock_read_rba):
         """Test filtering with only start date."""
         # Setup mock data
         mock_data = pd.DataFrame({
-            'date': pd.date_range('2023-01-01', periods=12, freq='ME'),
+            'date': pd.date_range('2023-01-01', periods=12, freq=get_pandas_freq_alias("M")),
             'value': list(range(12)),
             'series': ['Cash Rate Target'] * 12,
             'series_id': ['FIRMMCRT'] * 12,
@@ -109,12 +110,12 @@ class TestReadCashRate:
         assert len(result) == 7  # June through December
         assert result['date'].min() >= pd.Timestamp('2023-06-01')
     
-    @patch('rbapy.cash_rate.read_rba')
+    @patch('rbadata.cash_rate.read_rba')
     def test_read_cashrate_end_date_only(self, mock_read_rba):
         """Test filtering with only end date."""
         # Setup mock data
         mock_data = pd.DataFrame({
-            'date': pd.date_range('2023-01-01', periods=12, freq='ME'),
+            'date': pd.date_range('2023-01-01', periods=12, freq=get_pandas_freq_alias("M")),
             'value': list(range(12)),
             'series': ['Cash Rate Target'] * 12,
             'series_id': ['FIRMMCRT'] * 12,
@@ -129,7 +130,7 @@ class TestReadCashRate:
         assert len(result) == 3  # January, February, March
         assert result['date'].max() <= pd.Timestamp('2023-03-31')
     
-    @patch('rbapy.cash_rate.read_rba')
+    @patch('rbadata.cash_rate.read_rba')
     def test_read_cashrate_date_formats(self, mock_read_rba):
         """Test various date input formats."""
         # Setup mock data
@@ -160,7 +161,7 @@ class TestReadCashRate:
         )
         assert len(result3) == 31
     
-    @patch('rbapy.cash_rate.read_rba')
+    @patch('rbadata.cash_rate.read_rba')
     def test_read_cashrate_sorting(self, mock_read_rba):
         """Test that results are sorted by date."""
         # Setup mock data with unsorted dates
@@ -183,12 +184,12 @@ class TestReadCashRate:
         assert list(result['value']) == [0, 1, 2, 3, 4]
         assert result['date'].is_monotonic_increasing
     
-    @patch('rbapy.cash_rate.read_rba')
+    @patch('rbadata.cash_rate.read_rba')
     def test_read_cashrate_empty_result(self, mock_read_rba):
         """Test handling of empty result after filtering."""
         # Setup mock data
         mock_data = pd.DataFrame({
-            'date': pd.date_range('2023-01-01', periods=5, freq='ME'),
+            'date': pd.date_range('2023-01-01', periods=5, freq=get_pandas_freq_alias("M")),
             'value': list(range(5)),
             'series': ['Cash Rate Target'] * 5,
             'series_id': ['FIRMMCRT'] * 5,
@@ -208,7 +209,7 @@ class TestReadCashRate:
 class TestCashRateIntegration:
     """Integration tests for cash rate functionality."""
     
-    @patch('rbapy.cash_rate.read_rba')
+    @patch('rbadata.cash_rate.read_rba')
     def test_cashrate_real_world_scenario(self, mock_read_rba):
         """Test a realistic scenario with actual cash rate values."""
         # Setup realistic cash rate data

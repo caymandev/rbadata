@@ -5,19 +5,20 @@ Tests for inflation calculator functionality
 import pytest
 import pandas as pd
 from unittest.mock import patch, MagicMock
-from rbapy import InflationCalculator, inflation_calculator
-from rbapy.exceptions import RBAPyError
+from rbadata import InflationCalculator, inflation_calculator
+from rbadata.utils import get_pandas_freq_alias
+from rbadata.exceptions import RBADataError
 
 
 class TestInflationCalculator:
     """Test the InflationCalculator class."""
     
-    @patch('rbapy.calculator.read_rba')
+    @patch('rbadata.calculator.read_rba')
     def test_calculator_init(self, mock_read_rba):
         """Test calculator initialization loads CPI data."""
         # Mock CPI data
         mock_cpi_data = pd.DataFrame({
-            'date': pd.date_range('2020-01-01', periods=12, freq='QE'),
+            'date': pd.date_range('2020-01-01', periods=12, freq=get_pandas_freq_alias("Q")),
             'value': [100.0 + i for i in range(12)],
             'series_id': ['GCPIAG'] * 12
         })
@@ -30,7 +31,7 @@ class TestInflationCalculator:
         mock_read_rba.assert_called_once_with(series_id="GCPIAG")
         assert len(calc._cpi_data) == 12
     
-    @patch('rbapy.calculator.read_rba')
+    @patch('rbadata.calculator.read_rba')
     def test_calculate_value(self, mock_read_rba):
         """Test value calculation between periods."""
         # Mock CPI data
@@ -57,7 +58,7 @@ class TestInflationCalculator:
         result = calc.calculate_value(1000, "2021", "2022")
         assert result == 1047.62  # 1000 * (110/105) rounded to 2 decimals
     
-    @patch('rbapy.calculator.read_rba')
+    @patch('rbadata.calculator.read_rba')
     def test_calculate_inflation_rate(self, mock_read_rba):
         """Test inflation rate calculation."""
         # Mock CPI data
@@ -83,7 +84,7 @@ class TestInflationCalculator:
         # Should be approximately 4.77% annualized over 3 years
         assert 4.5 < result < 5.0
     
-    @patch('rbapy.calculator.read_rba')
+    @patch('rbadata.calculator.read_rba')
     def test_parse_period_formats(self, mock_read_rba):
         """Test parsing of various period formats."""
         # Mock minimal CPI data
@@ -111,12 +112,12 @@ class TestInflationCalculator:
         result = calc._parse_period("2020-03-31")
         assert result == pd.Timestamp("2020-03-31")
     
-    @patch('rbapy.calculator.read_rba')
+    @patch('rbadata.calculator.read_rba')
     def test_get_cpi_series(self, mock_read_rba):
         """Test getting CPI series with date filtering."""
         # Mock CPI data
         mock_cpi_data = pd.DataFrame({
-            'date': pd.date_range('2020-01-01', periods=12, freq='QE'),
+            'date': pd.date_range('2020-01-01', periods=12, freq=get_pandas_freq_alias("Q")),
             'value': [100.0 + i for i in range(12)],
             'series_id': ['GCPIAG'] * 12
         })
@@ -136,7 +137,7 @@ class TestInflationCalculator:
         assert len(series) < 12
         assert series.index[0] >= pd.Timestamp("2020-07-01")
     
-    @patch('rbapy.calculator.read_rba')
+    @patch('rbadata.calculator.read_rba')
     def test_interpolation(self, mock_read_rba):
         """Test CPI value interpolation for missing dates."""
         # Mock CPI data with quarterly values
@@ -166,7 +167,7 @@ class TestInflationCalculator:
 class TestInflationCalculatorConvenience:
     """Test convenience functions."""
     
-    @patch('rbapy.calculator.InflationCalculator')
+    @patch('rbadata.calculator.InflationCalculator')
     def test_inflation_calculator_function(self, mock_calculator_class):
         """Test the convenience function."""
         # Mock calculator instance

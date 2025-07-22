@@ -8,7 +8,8 @@ import numpy as np
 from datetime import datetime
 from unittest.mock import Mock, patch, MagicMock
 import requests
-from rbapy.utils import (
+from rbadata.utils import (
+    get_pandas_freq_alias,
     get_rba_urls,
     check_rba_connection,
     tables_from_seriesid,
@@ -16,13 +17,13 @@ from rbapy.utils import (
     is_rba_ts_format,
     _is_potential_date
 )
-from rbapy.exceptions import RBAPyError
+from rbadata.exceptions import RBADataError
 
 
 class TestGetRBAUrls:
     """Test the get_rba_urls function."""
     
-    @patch('rbapy.utils.get_table_list')
+    @patch('rbadata.utils.get_table_list')
     def test_get_rba_urls_success(self, mock_get_table_list):
         """Test successful URL retrieval."""
         # Mock table list
@@ -45,7 +46,7 @@ class TestGetRBAUrls:
         urls = get_rba_urls(['G1', 'A1'], 'current')
         assert len(urls) == 2
     
-    @patch('rbapy.utils.get_table_list')
+    @patch('rbadata.utils.get_table_list')
     def test_get_rba_urls_not_found(self, mock_get_table_list):
         """Test error when table not found."""
         mock_table_list = pd.DataFrame({
@@ -55,10 +56,10 @@ class TestGetRBAUrls:
         })
         mock_get_table_list.return_value = mock_table_list
         
-        with pytest.raises(RBAPyError, match="Table 'XYZ' not found"):
+        with pytest.raises(RBADataError, match="Table 'XYZ' not found"):
             get_rba_urls(['XYZ'], 'current')
     
-    @patch('rbapy.utils.get_table_list')
+    @patch('rbadata.utils.get_table_list')
     def test_get_rba_urls_historical(self, mock_get_table_list):
         """Test getting historical URLs."""
         mock_table_list = pd.DataFrame({
@@ -93,7 +94,7 @@ class TestCheckRBAConnection:
         mock_response.status_code = 404
         mock_head.return_value = mock_response
         
-        with pytest.raises(RBAPyError, match="Cannot connect to RBA website"):
+        with pytest.raises(RBADataError, match="Cannot connect to RBA website"):
             check_rba_connection()
     
     @patch('requests.head')
@@ -101,14 +102,14 @@ class TestCheckRBAConnection:
         """Test connection failure with exception."""
         mock_head.side_effect = requests.RequestException("Network error")
         
-        with pytest.raises(RBAPyError, match="No internet connection"):
+        with pytest.raises(RBADataError, match="No internet connection"):
             check_rba_connection()
 
 
 class TestTablesFromSeriesId:
     """Test the tables_from_seriesid function."""
     
-    @patch('rbapy.utils.get_series_list')
+    @patch('rbadata.utils.get_series_list')
     def test_tables_from_seriesid_success(self, mock_get_series_list):
         """Test successful series to table mapping."""
         mock_series_list = pd.DataFrame({
@@ -129,7 +130,7 @@ class TestTablesFromSeriesId:
         result = tables_from_seriesid(['GCPIAG', 'GLFSURSA'])
         assert result == {'G1': ['GCPIAG'], 'H3': ['GLFSURSA']}
     
-    @patch('rbapy.utils.get_series_list')
+    @patch('rbadata.utils.get_series_list')
     def test_tables_from_seriesid_not_found(self, mock_get_series_list):
         """Test error when series not found."""
         mock_series_list = pd.DataFrame({
@@ -138,7 +139,7 @@ class TestTablesFromSeriesId:
         })
         mock_get_series_list.return_value = mock_series_list
         
-        with pytest.raises(RBAPyError, match="Series ID 'INVALID' not found"):
+        with pytest.raises(RBADataError, match="Series ID 'INVALID' not found"):
             tables_from_seriesid(['INVALID'])
 
 
@@ -176,7 +177,7 @@ class TestIsRBATsFormat:
     def test_valid_ts_format(self):
         """Test with valid time series format."""
         df = pd.DataFrame({
-            'Date': pd.date_range('2020-01-01', periods=10, freq='ME'),
+            'Date': pd.date_range('2020-01-01', periods=10, freq=get_pandas_freq_alias("M")),
             'Series1': np.random.rand(10),
             'Series2': np.random.rand(10)
         })

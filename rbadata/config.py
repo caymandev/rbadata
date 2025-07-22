@@ -1,5 +1,5 @@
 """
-Configuration and settings for rbapy
+Configuration and settings for rbadata
 """
 
 import os
@@ -17,7 +17,7 @@ def get_download_method() -> Optional[str]:
     str or None
         Download method (e.g., "wininet") or None for default
     """
-    return os.environ.get("RBAPY_DL_METHOD")
+    return os.environ.get("RBADATA_DL_METHOD")
 
 
 def get_headers() -> Dict[str, str]:
@@ -30,6 +30,6 @@ def get_headers() -> Dict[str, str]:
         Headers to use for HTTP requests
     """
     return {
-        "User-Agent": "rbapy/0.1.0 (Python package for accessing RBA data)",
+        "User-Agent": "rbadata/0.1.0 (Python package for accessing RBA data)",
         "Accept": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     }

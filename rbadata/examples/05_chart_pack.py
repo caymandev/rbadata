@@ -10,14 +10,14 @@ This example demonstrates how to:
 - Understand Chart Pack structure
 """
 
-import rbapy
+import rbadata
 from pathlib import Path
 import pandas as pd
 
 def main():
     """Main function demonstrating Chart Pack functionality."""
     
-    print("rbapy Chart Pack Examples")
+    print("rbadata Chart Pack Examples")
     print("=" * 50)
     
     # Example 1: Create Chart Pack instance
@@ -25,10 +25,10 @@ def main():
     print("-" * 50)
     
     # Get Chart Pack instance
-    chart_pack = rbapy.get_chart_pack()
+    chart_pack = rbadata.get_chart_pack()
     
     # Alternative: Create instance directly
-    cp = rbapy.ChartPack()
+    cp = rbadata.ChartPack()
     
     print("Chart Pack instance created successfully")
     print("The Chart Pack provides graphical summaries of economic data")

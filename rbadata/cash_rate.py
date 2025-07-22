@@ -5,7 +5,7 @@ Functions for accessing RBA cash rate data
 import pandas as pd
 from datetime import datetime, timedelta
 from .core import read_rba
-from .exceptions import RBAPyError
+from .exceptions import RBADataError
 
 
 def read_cashrate(
@@ -53,7 +53,7 @@ def read_cashrate(
     elif type == "interbank":
         series_id = "FIRMMBAB30"  # Interbank overnight rate
     else:
-        raise RBAPyError(f"Invalid cash rate type: {type}")
+        raise RBADataError(f"Invalid cash rate type: {type}")
     
     # Read the data
     df = read_rba(series_id=series_id)

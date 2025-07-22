@@ -9,8 +9,8 @@ from datetime import datetime
 from unittest.mock import patch, Mock, MagicMock, mock_open
 import requests
 from bs4 import BeautifulSoup
-from rbapy.chart_pack import ChartPack, get_chart_pack
-from rbapy.exceptions import RBAPyError
+from rbadata.chart_pack import ChartPack, get_chart_pack
+from rbadata.exceptions import RBADataError
 
 
 class TestChartPack:
@@ -25,7 +25,7 @@ class TestChartPack:
         assert cp._last_update is None
         assert hasattr(cp, 'BASE_URL')
     
-    @patch('rbapy.chart_pack.ChartPack._scrape_chart_pack_page')
+    @patch('rbadata.chart_pack.ChartPack._scrape_chart_pack_page')
     def test_get_categories(self, mock_scrape):
         """Test getting chart categories."""
         cp = ChartPack()
@@ -41,7 +41,7 @@ class TestChartPack:
         cp.get_categories(refresh=True)
         mock_scrape.assert_called_once()
     
-    @patch('rbapy.chart_pack.ChartPack._scrape_chart_pack_page')
+    @patch('rbadata.chart_pack.ChartPack._scrape_chart_pack_page')
     def test_get_categories_initial_load(self, mock_scrape):
         """Test getting categories when not cached."""
         cp = ChartPack()
@@ -58,7 +58,7 @@ class TestChartPack:
         assert categories == mock_categories
         mock_scrape.assert_called_once()
     
-    @patch('rbapy.chart_pack.ChartPack._scrape_chart_pack_page')
+    @patch('rbadata.chart_pack.ChartPack._scrape_chart_pack_page')
     def test_get_charts_by_category(self, mock_scrape):
         """Test getting charts by category."""
         cp = ChartPack()
@@ -76,7 +76,7 @@ class TestChartPack:
         assert all(c['category'] == 'Inflation' for c in inflation_charts)
         mock_scrape.assert_not_called()
     
-    @patch('rbapy.chart_pack.ChartPack._scrape_chart_pack_page')
+    @patch('rbadata.chart_pack.ChartPack._scrape_chart_pack_page')
     def test_get_charts_by_category_case_insensitive(self, mock_scrape):
         """Test category matching is case-insensitive."""
         cp = ChartPack()
@@ -92,17 +92,17 @@ class TestChartPack:
         
         assert len(charts1) == len(charts2) == len(charts3) == 1
     
-    @patch('rbapy.chart_pack.ChartPack._scrape_chart_pack_page')
+    @patch('rbadata.chart_pack.ChartPack._scrape_chart_pack_page')
     def test_get_charts_by_category_invalid(self, mock_scrape):
         """Test error for invalid category."""
         cp = ChartPack()
         cp._categories = ['Inflation', 'Growth']
         cp._charts = []
         
-        with pytest.raises(RBAPyError, match="Category 'Invalid' not found"):
+        with pytest.raises(RBADataError, match="Category 'Invalid' not found"):
             cp.get_charts_by_category('Invalid')
     
-    @patch('rbapy.chart_pack.ChartPack._scrape_chart_pack_page')
+    @patch('rbadata.chart_pack.ChartPack._scrape_chart_pack_page')
     def test_get_all_charts(self, mock_scrape):
         """Test getting all charts."""
         cp = ChartPack()
@@ -123,7 +123,7 @@ class TestChartPack:
     
     @patch('requests.get')
     @patch('builtins.open', new_callable=mock_open)
-    @patch('rbapy.chart_pack.ChartPack._get_chart_pack_pdf_url')
+    @patch('rbadata.chart_pack.ChartPack._get_chart_pack_pdf_url')
     def test_download_chart_pack_latest(self, mock_get_url, mock_file, mock_get):
         """Test downloading latest chart pack."""
         # Setup mocks
@@ -203,7 +203,7 @@ class TestChartPack:
         with pytest.raises(NotImplementedError, match="not yet implemented"):
             cp.get_chart_data('chart123')
     
-    @patch('rbapy.chart_pack.ChartPack._scrape_chart_pack_page')
+    @patch('rbadata.chart_pack.ChartPack._scrape_chart_pack_page')
     def test_get_latest_release_date(self, mock_scrape):
         """Test getting latest release date."""
         cp = ChartPack()
@@ -275,7 +275,7 @@ class TestChartPack:
         
         cp = ChartPack()
         
-        with pytest.raises(RBAPyError, match="Failed to access Chart Pack page"):
+        with pytest.raises(RBADataError, match="Failed to access Chart Pack page"):
             cp._scrape_chart_pack_page()
     
     @patch('requests.get')

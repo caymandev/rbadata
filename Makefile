@@ -6,7 +6,7 @@ test:
 
 # Run tests with coverage
 coverage:
-	pytest tests/ --cov=rbapy --cov-report=term-missing --cov-report=html
+	pytest tests/ --cov=rbadata --cov-report=term-missing --cov-report=html
 
 # Update coverage badge
 badge:
@@ -14,14 +14,14 @@ badge:
 
 # Run linting
 lint:
-	flake8 rbapy/ --max-line-length=88 --extend-ignore=E203,W503
-	black --check rbapy/
-	isort --check-only rbapy/
+	flake8 rbadata/ --max-line-length=88 --extend-ignore=E203,W503
+	black --check rbadata/
+	isort --check-only rbadata/
 
 # Format code
 format:
-	black rbapy/
-	isort rbapy/
+	black rbadata/
+	isort rbadata/
 
 # Clean up
 clean:

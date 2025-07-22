@@ -7,7 +7,7 @@ from typing import Dict, List, Optional, Literal
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-from .exceptions import RBAPyError
+from .exceptions import RBADataError
 from .config import get_headers
 
 
@@ -89,7 +89,7 @@ class Snapshots:
             Path to downloaded PDF
         """
         if snapshot_type not in self.SNAPSHOT_TYPES:
-            raise RBAPyError(
+            raise RBADataError(
                 f"Invalid snapshot type '{snapshot_type}'. "
                 f"Must be one of: {list(self.SNAPSHOT_TYPES.keys())}"
             )
@@ -101,7 +101,7 @@ class Snapshots:
         # Determine output path
         if output_path is None:
             from tempfile import gettempdir
-            temp_dir = Path(gettempdir()) / "rbapy_snapshots"
+            temp_dir = Path(gettempdir()) / "rbadata_snapshots"
             temp_dir.mkdir(exist_ok=True)
             output_path = temp_dir / f"rba_{snapshot_type}_snapshot.pdf"
         else:
@@ -112,7 +112,7 @@ class Snapshots:
             response = requests.get(pdf_url, headers=get_headers(), timeout=30)
             response.raise_for_status()
         except requests.RequestException as e:
-            raise RBAPyError(f"Failed to download snapshot: {str(e)}")
+            raise RBADataError(f"Failed to download snapshot: {str(e)}")
         
         # Save
         with open(output_path, "wb") as f:

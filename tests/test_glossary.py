@@ -4,8 +4,8 @@ Tests for glossary functionality
 
 import pytest
 import pandas as pd
-from rbapy import Glossary, get_glossary, define
-from rbapy.exceptions import RBAPyError
+from rbadata import Glossary, get_glossary, define
+from rbadata.exceptions import RBADataError
 
 
 class TestGlossary:
@@ -46,7 +46,7 @@ class TestGlossary:
         """Test error when term not found."""
         glossary = Glossary()
         
-        with pytest.raises(RBAPyError, match="Term 'XYZ' not found"):
+        with pytest.raises(RBADataError, match="Term 'XYZ' not found"):
             glossary.get_definition("XYZ")
     
     def test_search(self):
@@ -97,7 +97,7 @@ class TestGlossary:
         assert "CPI" in inflation_terms["term"].values
         
         # Test invalid category
-        with pytest.raises(RBAPyError, match="Category 'Invalid' not found"):
+        with pytest.raises(RBADataError, match="Category 'Invalid' not found"):
             glossary.get_terms_by_category("Invalid")
     
     def test_add_custom_term(self):
@@ -162,5 +162,5 @@ class TestGlossaryConvenience:
         assert "Gross Domestic Product" in definition or "goods and services" in definition
         
         # Test error for non-existent term
-        with pytest.raises(RBAPyError):
+        with pytest.raises(RBADataError):
             define("NONEXISTENT")

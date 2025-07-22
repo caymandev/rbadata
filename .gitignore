@@ -172,6 +172,6 @@ cython_debug/
 *~
 
 # RBA specific temp files
-rbapy_charts/
-rbapy_snapshots/
-.rbapy/
+rbadata_charts/
+rbadata_snapshots/
+.rbadata/

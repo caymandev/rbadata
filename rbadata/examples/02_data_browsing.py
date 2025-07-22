@@ -1,5 +1,5 @@
 """
-Data Browsing and Discovery Examples for rbapy
+Data Browsing and Discovery Examples for rbadata
 ==============================================
 
 This example demonstrates how to:
@@ -10,13 +10,13 @@ This example demonstrates how to:
 - Find the right data for your analysis
 """
 
-import rbapy
+import rbadata
 import pandas as pd
 
 def main():
     """Main function demonstrating data browsing features."""
     
-    print("rbapy Data Browsing Examples")
+    print("rbadata Data Browsing Examples")
     print("=" * 50)
     
     # Example 1: Browse all available tables
@@ -25,7 +25,7 @@ def main():
     
     # Get a list of all available tables
     # This returns a DataFrame with table information
-    all_tables = rbapy.browse_rba_tables()
+    all_tables = rbadata.browse_rba_tables()
     
     print(f"Total number of available tables: {len(all_tables)}")
     print("\nTable information columns:")
@@ -45,7 +45,7 @@ def main():
     print("-" * 50)
     
     # Search for inflation-related tables
-    inflation_tables = rbapy.browse_rba_tables("inflation")
+    inflation_tables = rbadata.browse_rba_tables("inflation")
     
     print(f"Tables related to 'inflation': {len(inflation_tables)}")
     print("\nInflation tables:")
@@ -55,7 +55,7 @@ def main():
     # Search for other topics
     topics = ["interest", "exchange", "credit", "labour"]
     for topic in topics:
-        tables = rbapy.browse_rba_tables(topic)
+        tables = rbadata.browse_rba_tables(topic)
         print(f"\nTables containing '{topic}': {len(tables)}")
     
     
@@ -65,14 +65,14 @@ def main():
     
     # Get all available series
     # Note: This might be a large dataset
-    all_series = rbapy.browse_rba_series()
+    all_series = rbadata.browse_rba_series()
     
     print(f"Total number of data series: {len(all_series)}")
     print("\nSeries information columns:")
     print(all_series.columns.tolist())
     
     # Show series from a specific table
-    g1_series = rbapy.browse_rba_series(table_no="G1")
+    g1_series = rbadata.browse_rba_series(table_no="G1")
     print(f"\nNumber of series in table G1: {len(g1_series)}")
     print("\nSample series from G1:")
     print(g1_series[['series_id', 'series', 'frequency']].head())
@@ -83,7 +83,7 @@ def main():
     print("-" * 50)
     
     # Search for unemployment-related series
-    unemployment_series = rbapy.browse_rba_series("unemployment")
+    unemployment_series = rbadata.browse_rba_series("unemployment")
     
     print(f"Series related to 'unemployment': {len(unemployment_series)}")
     print("\nUnemployment series:")
@@ -97,7 +97,7 @@ def main():
     print("-" * 50)
     
     # Get all series and filter by frequency
-    all_series = rbapy.browse_rba_series()
+    all_series = rbadata.browse_rba_series()
     
     # Find daily series
     daily_series = all_series[all_series['frequency'] == 'Daily']
@@ -118,7 +118,7 @@ def main():
     
     # Not all tables can be read by the package
     # The 'readable' column indicates which ones are supported
-    tables = rbapy.browse_rba_tables()
+    tables = rbadata.browse_rba_tables()
     
     readable_tables = tables[tables['readable'] == True]
     non_readable_tables = tables[tables['readable'] == False]
@@ -142,7 +142,7 @@ def main():
     # This would scrape the RBA website for the latest tables
     # Note: This might take a few seconds
     try:
-        fresh_tables = rbapy.browse_rba_tables(refresh=True)
+        fresh_tables = rbadata.browse_rba_tables(refresh=True)
         print(f"Fresh table list loaded: {len(fresh_tables)} tables")
     except Exception as e:
         print(f"Note: Refresh requires internet connection. Error: {e}")
@@ -182,8 +182,8 @@ def main():
     
     # Get inflation and interest rate tables
     relevant_tables = pd.concat([
-        rbapy.browse_rba_tables("inflation"),
-        rbapy.browse_rba_tables("interest")
+        rbadata.browse_rba_tables("inflation"),
+        rbadata.browse_rba_tables("interest")
     ]).drop_duplicates()
     
     print(f"Saving {len(relevant_tables)} relevant tables to {output_file}")

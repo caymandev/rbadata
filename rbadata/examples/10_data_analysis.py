@@ -1,5 +1,5 @@
 """
-Real-World Data Analysis Examples with rbapy
+Real-World Data Analysis Examples with rbadata
 =============================================
 
 This example demonstrates practical economic analysis:
@@ -11,7 +11,7 @@ This example demonstrates practical economic analysis:
 - Cross-country comparisons
 """
 
-import rbapy
+import rbadata
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -28,7 +28,7 @@ except ImportError:
 def main():
     """Main function demonstrating real-world data analysis."""
     
-    print("rbapy Real-World Data Analysis Examples")
+    print("rbadata Real-World Data Analysis Examples")
     print("=" * 50)
     
     # Example 1: Monetary Policy Analysis
@@ -196,11 +196,11 @@ def analyze_monetary_policy():
     """Analyze current monetary policy stance."""
     try:
         # Get cash rate
-        cash_rate = rbapy.read_rba(series_id="FIRMMCRT")
+        cash_rate = rbadata.read_rba(series_id="FIRMMCRT")
         current_rate = cash_rate.iloc[-1]['value']
         
         # Get inflation
-        inflation = rbapy.read_rba(series_id="GCPIAGSAQP")
+        inflation = rbadata.read_rba(series_id="GCPIAGSAQP")
         current_inflation = inflation.iloc[-1]['value']
         
         # Calculate real rate
@@ -237,7 +237,7 @@ def analyze_inflation_dynamics():
     """Analyze inflation trends and dynamics."""
     try:
         # Get CPI data
-        cpi = rbapy.read_rba(series_id="GCPIAGSAQP")
+        cpi = rbadata.read_rba(series_id="GCPIAGSAQP")
         cpi_ts = cpi.set_index('date')['value']
         
         # Current rate
@@ -279,7 +279,7 @@ def analyze_labour_market():
     """Analyze labour market conditions."""
     try:
         # Get unemployment rate
-        unemployment = rbapy.read_rba(series_id="GLFSURSA")
+        unemployment = rbadata.read_rba(series_id="GLFSURSA")
         unemp_ts = unemployment.set_index('date')['value']
         
         # Current conditions
@@ -336,7 +336,7 @@ def calculate_financial_conditions_index():
         }
         
         # Cash rate (normalized)
-        cash_rate = rbapy.read_rba(series_id="FIRMMCRT")
+        cash_rate = rbadata.read_rba(series_id="FIRMMCRT")
         current_cash = cash_rate.iloc[-1]['value']
         historical_avg = cash_rate['value'].mean()
         components['cash_rate'] = (current_cash - historical_avg) / cash_rate['value'].std()
@@ -344,7 +344,7 @@ def calculate_financial_conditions_index():
         # Exchange rate (TWI - simplified proxy)
         # Higher TWI = stronger AUD = tighter conditions
         try:
-            twi = rbapy.read_rba(series_id="FXRTWI")
+            twi = rbadata.read_rba(series_id="FXRTWI")
             current_twi = twi.iloc[-1]['value']
             twi_avg = twi['value'].mean()
             components['exchange_rate'] = (current_twi - twi_avg) / twi['value'].std()
@@ -387,8 +387,8 @@ def analyze_taylor_rule():
     """Analyze monetary policy using Taylor Rule."""
     try:
         # Get required data
-        cash_rate = rbapy.read_rba(series_id="FIRMMCRT")
-        inflation = rbapy.read_rba(series_id="GCPIAGSAQP")
+        cash_rate = rbadata.read_rba(series_id="FIRMMCRT")
+        inflation = rbadata.read_rba(series_id="GCPIAGSAQP")
         
         # Current values
         actual_rate = cash_rate.iloc[-1]['value']
@@ -440,7 +440,7 @@ def evaluate_forecast_accuracy():
     """Evaluate RBA forecast accuracy."""
     try:
         # Get historical forecasts
-        all_forecasts = rbapy.rba_forecasts()
+        all_forecasts = rbadata.rba_forecasts()
         
         # Focus on 1-year ahead forecasts
         forecasts = all_forecasts.copy()
@@ -449,9 +449,9 @@ def evaluate_forecast_accuracy():
         
         # Get actual data for comparison
         actual_data = {
-            'gdp_change': rbapy.read_rba(series_id="GGDPECCPGDP"),
-            'cpi_annual': rbapy.read_rba(series_id="GCPIAGSAQP"),
-            'unemp_rate': rbapy.read_rba(series_id="GLFSURSA")
+            'gdp_change': rbadata.read_rba(series_id="GGDPECCPGDP"),
+            'cpi_annual': rbadata.read_rba(series_id="GCPIAGSAQP"),
+            'unemp_rate': rbadata.read_rba(series_id="GLFSURSA")
         }
         
         results = {}
@@ -492,7 +492,7 @@ def analyze_economic_cycles():
     """Analyze economic cycles and output gap."""
     try:
         # Get GDP growth
-        gdp = rbapy.read_rba(series_id="GGDPECCPGDP")
+        gdp = rbadata.read_rba(series_id="GGDPECCPGDP")
         gdp_ts = gdp.set_index('date')['value']
         
         # Simple cycle identification
@@ -552,9 +552,9 @@ def analyze_economic_relationships():
     try:
         # Get key series
         series_data = {
-            'cash_rate': rbapy.read_rba(series_id="FIRMMCRT"),
-            'inflation': rbapy.read_rba(series_id="GCPIAGSAQP"),
-            'unemployment': rbapy.read_rba(series_id="GLFSURSA"),
+            'cash_rate': rbadata.read_rba(series_id="FIRMMCRT"),
+            'inflation': rbadata.read_rba(series_id="GCPIAGSAQP"),
+            'unemployment': rbadata.read_rba(series_id="GLFSURSA"),
         }
         
         # Convert to aligned time series
@@ -615,8 +615,8 @@ def decompose_policy_rate():
     """Decompose policy rate into contributing factors."""
     try:
         # Get data
-        cash_rate = rbapy.read_rba(series_id="FIRMMCRT")
-        inflation = rbapy.read_rba(series_id="GCPIAGSAQP")
+        cash_rate = rbadata.read_rba(series_id="FIRMMCRT")
+        inflation = rbadata.read_rba(series_id="GCPIAGSAQP")
         
         current_rate = cash_rate.iloc[-1]['value']
         current_inflation = inflation.iloc[-1]['value']
@@ -659,7 +659,7 @@ def create_economic_dashboard_summary():
     
     try:
         # Current conditions
-        indicators = rbapy.get_economic_indicators()
+        indicators = rbadata.get_economic_indicators()
         key_indicators = ['GDP Growth', 'Unemployment Rate', 'CPI Inflation', 'Cash Rate']
         
         for indicator in key_indicators:
@@ -670,7 +670,7 @@ def create_economic_dashboard_summary():
                 dashboard['current_conditions'][indicator] = f"{value} {unit}"
         
         # Outlook
-        latest_forecasts = rbapy.rba_forecasts(all_or_latest="latest")
+        latest_forecasts = rbadata.rba_forecasts(all_or_latest="latest")
         
         # Get 1-year ahead forecasts
         one_year_ahead = pd.Timestamp.now() + pd.DateOffset(years=1)
@@ -688,13 +688,13 @@ def create_economic_dashboard_summary():
         
         # Risks
         # Simplified risk assessment based on current conditions
-        cash_rate_data = rbapy.read_rba(series_id="FIRMMCRT")
+        cash_rate_data = rbadata.read_rba(series_id="FIRMMCRT")
         current_cash_rate = cash_rate_data.iloc[-1]['value']
         
         if current_cash_rate > 4:
             dashboard['risks'].append("Elevated interest rates may constrain growth")
         
-        inflation_data = rbapy.read_rba(series_id="GCPIAGSAQP")
+        inflation_data = rbadata.read_rba(series_id="GCPIAGSAQP")
         current_inflation = inflation_data.iloc[-1]['value']
         
         if current_inflation > 3:

@@ -1,6 +1,6 @@
-# rbapy Examples
+# rbadata Examples
 
-This directory contains comprehensive examples demonstrating all features of the rbapy package.
+This directory contains comprehensive examples demonstrating all features of the rbadata package.
 
 ## Example Files
 
@@ -25,10 +25,10 @@ python examples/01_basic_usage.py
 
 ## Requirements
 
-All examples require rbapy to be installed:
+All examples require rbadata to be installed:
 
 ```bash
-pip install rbapy
+pip install rbadata
 ```
 
 Some examples may also use additional packages for visualization:

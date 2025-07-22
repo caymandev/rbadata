@@ -6,7 +6,7 @@ from typing import Union, Optional, Literal
 import pandas as pd
 from datetime import datetime
 from .core import read_rba
-from .exceptions import RBAPyError
+from .exceptions import RBADataError
 
 
 class InflationCalculator:
@@ -44,7 +44,7 @@ class InflationCalculator:
             self._cpi_data = df.set_index("date")["value"]
             
         except Exception as e:
-            raise RBAPyError(f"Failed to load CPI data: {str(e)}")
+            raise RBADataError(f"Failed to load CPI data: {str(e)}")
     
     def calculate_value(
         self,
@@ -202,7 +202,7 @@ class InflationCalculator:
         try:
             return pd.Timestamp(period)
         except:
-            raise RBAPyError(f"Could not parse period: {period}")
+            raise RBADataError(f"Could not parse period: {period}")
     
     def _get_cpi_value(self, date: pd.Timestamp) -> float:
         """Get CPI value for a specific date, with interpolation if needed."""
@@ -214,7 +214,7 @@ class InflationCalculator:
         after_dates = self._cpi_data[self._cpi_data.index >= date]
         
         if len(before_dates) == 0:
-            raise RBAPyError(f"No CPI data available before {date}")
+            raise RBADataError(f"No CPI data available before {date}")
         
         if len(after_dates) == 0:
             # Use the last available value

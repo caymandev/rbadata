@@ -7,7 +7,7 @@ import pandas as pd
 from .download import download_rba
 from .tidy import tidy_rba
 from .utils import get_rba_urls, check_rba_connection, tables_from_seriesid
-from .exceptions import RBAPyError
+from .exceptions import RBADataError
 
 
 def read_rba(
@@ -34,7 +34,7 @@ def read_rba(
         
     Raises
     ------
-    RBAPyError
+    RBADataError
         If neither table_no nor series_id is provided
         If the requested data cannot be downloaded
         
@@ -54,10 +54,10 @@ def read_rba(
     
     # Validate inputs
     if table_no is None and series_id is None:
-        raise RBAPyError("Either 'table_no' or 'series_id' must be specified")
+        raise RBADataError("Either 'table_no' or 'series_id' must be specified")
     
     if table_no is not None and series_id is not None:
-        raise RBAPyError("Only one of 'table_no' or 'series_id' should be specified")
+        raise RBADataError("Only one of 'table_no' or 'series_id' should be specified")
     
     # Handle series_id input
     if series_id is not None:

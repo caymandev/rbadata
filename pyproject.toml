@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "rbapy"
+name = "rbadata"
 version = "0.1.0"
 description = "Download and tidy data from the Reserve Bank of Australia"
 readme = {file = "README.md", content-type = "text/markdown"}
@@ -47,18 +47,18 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/caymandev/rbapy"
-Documentation = "https://rbapy.readthedocs.io"
-Repository = "https://github.com/caymandev/rbapy"
-Issues = "https://github.com/caymandev/rbapy/issues"
+Homepage = "https://github.com/caymandev/rbadata"
+Documentation = "https://rbadata.readthedocs.io"
+Repository = "https://github.com/caymandev/rbadata"
+Issues = "https://github.com/caymandev/rbadata/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["rbapy*"]
+include = ["rbadata*"]
 exclude = ["tests*"]
 
 [tool.setuptools.package-data]
-rbapy = ["data/*.json"]
+rbadata = ["data/*.json"]
 
 [tool.black]
 line-length = 88

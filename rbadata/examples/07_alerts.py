@@ -10,14 +10,14 @@ This example demonstrates how to:
 - Create custom notification workflows
 """
 
-import rbapy
+import rbadata
 import pandas as pd
 from datetime import datetime, time
 
 def main():
     """Main function demonstrating alerts functionality."""
     
-    print("rbapy Data Release Alerts Examples")
+    print("rbadata Data Release Alerts Examples")
     print("=" * 50)
     
     # Example 1: Create alerts instance
@@ -25,11 +25,11 @@ def main():
     print("-" * 50)
     
     # Create alerts manager
-    alerts = rbapy.RBAAlerts()
+    alerts = rbadata.RBAAlerts()
     
     print("Alerts manager created successfully")
     print("Alerts are stored in your home directory by default")
-    print(f"Config location: ~/.rbapy/alerts.json")
+    print(f"Config location: ~/.rbadata/alerts.json")
     
     
     # Example 2: Create basic alerts
@@ -63,7 +63,7 @@ def main():
     print("-" * 50)
     
     # Quick way to create alerts
-    quick_alert = rbapy.create_alert(
+    quick_alert = rbadata.create_alert(
         table_no="F1",
         name="Interest Rates Update"
     )

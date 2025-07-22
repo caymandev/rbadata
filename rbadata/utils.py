@@ -1,5 +1,5 @@
 """
-Utility functions for rbapy
+Utility functions for rbadata
 """
 
 from typing import Dict, List, Optional, Union
@@ -7,7 +7,7 @@ import re
 from datetime import datetime
 import pandas as pd
 import requests
-from .exceptions import RBAPyError
+from .exceptions import RBADataError
 from .data import get_table_list, get_series_list
 
 
@@ -41,7 +41,7 @@ def get_rba_urls(table_nos: List[str], cur_hist: str = "current") -> List[str]:
         matches = table_list[table_list["no"] == table_no]
         
         if len(matches) == 0:
-            raise RBAPyError(f"Table '{table_no}' not found in RBA table list")
+            raise RBADataError(f"Table '{table_no}' not found in RBA table list")
         
         url = matches.iloc[0]["url"]
         urls.append(url)
@@ -55,15 +55,15 @@ def check_rba_connection():
     
     Raises
     ------
-    RBAPyError
+    RBADataError
         If connection cannot be established
     """
     try:
         response = requests.head("https://www.rba.gov.au", timeout=5)
         if response.status_code >= 400:
-            raise RBAPyError("Cannot connect to RBA website")
+            raise RBADataError("Cannot connect to RBA website")
     except requests.RequestException:
-        raise RBAPyError(
+        raise RBADataError(
             "No internet connection or RBA website is unreachable. "
             "Please check your internet connection."
         )
@@ -91,7 +91,7 @@ def tables_from_seriesid(series_ids: List[str]) -> Dict[str, List[str]]:
         matches = series_list[series_list["series_id"] == series_id]
         
         if len(matches) == 0:
-            raise RBAPyError(f"Series ID '{series_id}' not found")
+            raise RBADataError(f"Series ID '{series_id}' not found")
         
         # Get table number(s) for this series
         for _, row in matches.iterrows():
@@ -197,3 +197,40 @@ def _is_potential_date(value) -> bool:
         return True
     
     return False
+
+
+def get_pandas_freq_alias(freq_type: str) -> str:
+    """
+    Get the appropriate pandas frequency alias based on pandas version.
+    
+    Handles the change in frequency aliases between pandas < 2.0 and >= 2.0:
+    - Quarter end: "Q" -> "QE"
+    - Month end: "M" -> "ME"
+    
+    Parameters
+    ----------
+    freq_type : str
+        The frequency type ("Q" or "M")
+        
+    Returns
+    -------
+    str
+        The appropriate frequency alias for the current pandas version
+    """
+    try:
+        # Parse version more carefully
+        # Handle versions like '1.5.3', '2.0.0', '2.1.0rc0'
+        version_str = pd.__version__.split('+')[0]  # Remove any '+' suffixes
+        version_str = version_str.split('rc')[0]    # Remove release candidate suffixes
+        version_parts = version_str.split('.')[:2]
+        pd_version = tuple(int(x) for x in version_parts)
+    except (ValueError, AttributeError):
+        # If we can't parse the version, assume old pandas
+        pd_version = (1, 0)
+    
+    if freq_type.upper() == "Q":
+        return "QE" if pd_version >= (2, 0) else "Q"
+    elif freq_type.upper() == "M":
+        return "ME" if pd_version >= (2, 0) else "M"
+    else:
+        return freq_type

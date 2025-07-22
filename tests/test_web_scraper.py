@@ -7,22 +7,22 @@ import pandas as pd
 import requests
 from unittest.mock import patch, Mock, MagicMock
 from bs4 import BeautifulSoup
-from rbapy.web_scraper import (
+from rbadata.web_scraper import (
     scrape_table_list,
     _scrape_statistical_tables,
     _scrape_historical_tables,
     _get_exchange_rate_tables,
     _get_non_readable_tables
 )
-from rbapy.exceptions import RBAPyError
+from rbadata.exceptions import RBADataError
 
 
 class TestScrapeTableList:
     """Test the main scrape_table_list function."""
     
-    @patch('rbapy.web_scraper._scrape_statistical_tables')
-    @patch('rbapy.web_scraper._scrape_historical_tables')
-    @patch('rbapy.web_scraper._get_exchange_rate_tables')
+    @patch('rbadata.web_scraper._scrape_statistical_tables')
+    @patch('rbadata.web_scraper._scrape_historical_tables')
+    @patch('rbadata.web_scraper._get_exchange_rate_tables')
     def test_scrape_table_list_success(self, mock_exchange, mock_hist, mock_stat):
         """Test successful scraping of all table types."""
         # Setup mocks
@@ -60,9 +60,9 @@ class TestScrapeTableList:
         # Check readable column exists
         assert 'readable' in result.columns
     
-    @patch('rbapy.web_scraper._scrape_statistical_tables')
-    @patch('rbapy.web_scraper._scrape_historical_tables')
-    @patch('rbapy.web_scraper._get_exchange_rate_tables')
+    @patch('rbadata.web_scraper._scrape_statistical_tables')
+    @patch('rbadata.web_scraper._scrape_historical_tables')
+    @patch('rbadata.web_scraper._get_exchange_rate_tables')
     def test_scrape_table_list_non_readable(self, mock_exchange, mock_hist, mock_stat):
         """Test marking of non-readable tables."""
         # Include a non-readable table
@@ -127,7 +127,7 @@ class TestScrapeStatisticalTables:
         """Test handling of network errors."""
         mock_get.side_effect = requests.RequestException("Network error")
         
-        with pytest.raises(RBAPyError, match="Failed to fetch RBA tables page"):
+        with pytest.raises(RBADataError, match="Failed to fetch RBA tables page"):
             _scrape_statistical_tables()
     
     @patch('requests.get')
@@ -137,7 +137,7 @@ class TestScrapeStatisticalTables:
         mock_response.raise_for_status.side_effect = requests.HTTPError("404 Not Found")
         mock_get.return_value = mock_response
         
-        with pytest.raises(RBAPyError, match="Failed to fetch RBA tables page"):
+        with pytest.raises(RBADataError, match="Failed to fetch RBA tables page"):
             _scrape_statistical_tables()
     
     @patch('requests.get')
@@ -202,7 +202,7 @@ class TestScrapeHistoricalTables:
         """Test handling of network errors."""
         mock_get.side_effect = requests.RequestException("Connection timeout")
         
-        with pytest.raises(RBAPyError, match="Failed to fetch RBA historical data page"):
+        with pytest.raises(RBADataError, match="Failed to fetch RBA historical data page"):
             _scrape_historical_tables()
 
 

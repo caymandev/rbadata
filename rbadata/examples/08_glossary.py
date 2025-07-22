@@ -10,13 +10,13 @@ This example demonstrates how to:
 - Build a reference dictionary
 """
 
-import rbapy
+import rbadata
 import pandas as pd
 
 def main():
     """Main function demonstrating glossary functionality."""
     
-    print("rbapy Glossary Examples")
+    print("rbadata Glossary Examples")
     print("=" * 50)
     
     # Example 1: Quick term lookup
@@ -29,7 +29,7 @@ def main():
     print("Common economic terms:")
     for term in terms_to_define:
         try:
-            definition = rbapy.define(term)
+            definition = rbadata.define(term)
             print(f"\n{term}:")
             print(f"  {definition}")
         except Exception as e:
@@ -41,10 +41,10 @@ def main():
     print("-" * 50)
     
     # Get glossary instance
-    glossary = rbapy.get_glossary()
+    glossary = rbadata.get_glossary()
     
     # Alternative: Create directly
-    # glossary = rbapy.Glossary()
+    # glossary = rbadata.Glossary()
     
     print("Glossary loaded successfully")
     

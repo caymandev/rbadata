@@ -7,8 +7,8 @@ import pandas as pd
 from pathlib import Path
 from unittest.mock import patch, Mock, MagicMock, mock_open
 import requests
-from rbapy.snapshots import Snapshots, get_snapshots, get_economic_indicators
-from rbapy.exceptions import RBAPyError
+from rbadata.snapshots import Snapshots, get_snapshots, get_economic_indicators
+from rbadata.exceptions import RBADataError
 
 
 class TestSnapshots:
@@ -100,7 +100,7 @@ class TestSnapshots:
         """Test downloading with invalid snapshot type."""
         snapshots = Snapshots()
         
-        with pytest.raises(RBAPyError, match="Invalid snapshot type"):
+        with pytest.raises(RBADataError, match="Invalid snapshot type"):
             snapshots.download_snapshot('invalid-type')
     
     @patch('requests.get')
@@ -110,7 +110,7 @@ class TestSnapshots:
         
         snapshots = Snapshots()
         
-        with pytest.raises(RBAPyError, match="Failed to download snapshot"):
+        with pytest.raises(RBADataError, match="Failed to download snapshot"):
             snapshots.download_snapshot('economic-indicators')
     
     @patch('requests.get')
@@ -122,10 +122,10 @@ class TestSnapshots:
         
         snapshots = Snapshots()
         
-        with pytest.raises(RBAPyError, match="Failed to download snapshot"):
+        with pytest.raises(RBADataError, match="Failed to download snapshot"):
             snapshots.download_snapshot('economic-indicators')
     
-    @patch('rbapy.snapshots.Snapshots._scrape_economic_indicators')
+    @patch('rbadata.snapshots.Snapshots._scrape_economic_indicators')
     def test_get_economic_indicators(self, mock_scrape):
         """Test getting economic indicators data."""
         # Mock scraped data
@@ -150,7 +150,7 @@ class TestSnapshots:
         assert result2 is result  # Same object from cache
         assert mock_scrape.call_count == 1  # Not called again
     
-    @patch('rbapy.snapshots.Snapshots._scrape_economic_indicators')
+    @patch('rbadata.snapshots.Snapshots._scrape_economic_indicators')
     def test_get_economic_indicators_refresh(self, mock_scrape):
         """Test refreshing economic indicators data."""
         # Mock different data for each call
@@ -167,7 +167,7 @@ class TestSnapshots:
         assert result1['value'].iloc[0] == 2.5
         assert result2['value'].iloc[0] == 2.6
     
-    @patch('rbapy.snapshots.Snapshots._scrape_economy_composition')
+    @patch('rbadata.snapshots.Snapshots._scrape_economy_composition')
     def test_get_economy_composition(self, mock_scrape):
         """Test getting economy composition data."""
         # Mock scraped data
@@ -191,7 +191,7 @@ class TestSnapshots:
         result2 = snapshots.get_economy_composition()
         assert mock_scrape.call_count == 1
     
-    @patch('rbapy.snapshots.Snapshots._scrape_payment_methods')
+    @patch('rbadata.snapshots.Snapshots._scrape_payment_methods')
     def test_get_payment_methods(self, mock_scrape):
         """Test getting payment methods data."""
         # Mock scraped data
@@ -297,7 +297,7 @@ class TestSnapshotsFunctions:
         assert hasattr(result, 'get_economic_indicators')
         assert hasattr(result, 'download_snapshot')
     
-    @patch('rbapy.snapshots.Snapshots.get_economic_indicators')
+    @patch('rbadata.snapshots.Snapshots.get_economic_indicators')
     def test_get_economic_indicators_function(self, mock_get):
         """Test get_economic_indicators convenience function."""
         # Mock return data

@@ -12,7 +12,7 @@ coverage:
         target: 90%
         threshold: 1%
         paths:
-          - "rbapy/"
+          - "rbadata/"
     patch:
       default:
         target: 80%

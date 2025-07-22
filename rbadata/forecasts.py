@@ -6,9 +6,9 @@ from typing import Optional, Literal
 import pandas as pd
 import requests
 from datetime import datetime
-from .exceptions import RBAPyError
+from .exceptions import RBADataError
 from .download import download_rba
-from .utils import check_rba_connection
+from .utils import check_rba_connection, get_pandas_freq_alias
 
 
 def rba_forecasts(
@@ -75,7 +75,7 @@ def rba_forecasts(
     
     # Combine all forecasts
     if not forecasts_list:
-        raise RBAPyError("Could not retrieve any forecast data")
+        raise RBADataError("Could not retrieve any forecast data")
     
     all_forecasts = pd.concat(forecasts_list, ignore_index=True)
     
@@ -109,7 +109,7 @@ def _get_historical_forecasts() -> pd.DataFrame:
     # For now, create sample data
     data = {
         "forecast_date": [pd.Timestamp("2010-05-01")] * 4,
-        "date": pd.date_range("2010-06-01", periods=4, freq="QE"),
+        "date": pd.date_range("2010-06-01", periods=4, freq=get_pandas_freq_alias("Q")),
         "series": ["gdp_change"] * 4,
         "value": [3.5, 3.7, 3.8, 3.6],
         "series_desc": ["GDP growth - year-ended"] * 4,
@@ -126,7 +126,7 @@ def _get_recent_forecasts() -> pd.DataFrame:
     # For now, create sample data
     data = {
         "forecast_date": [pd.Timestamp("2023-05-01")] * 4,
-        "date": pd.date_range("2023-06-01", periods=4, freq="QE"),
+        "date": pd.date_range("2023-06-01", periods=4, freq=get_pandas_freq_alias("Q")),
         "series": ["cpi_annual"] * 4,
         "value": [5.8, 4.9, 4.1, 3.2],
         "series_desc": ["CPI - 4 quarter ended"] * 4,
@@ -156,7 +156,7 @@ def _scrape_latest_forecasts() -> pd.DataFrame:
     
     # Create sample latest forecast data
     forecast_date = pd.Timestamp("2024-08-01")
-    dates = pd.date_range("2024-06-01", "2026-12-01", freq="QE")
+    dates = pd.date_range("2024-06-01", "2026-12-01", freq=get_pandas_freq_alias("Q"))
     
     data_rows = []
     for series_desc, series_code in series_map.items():

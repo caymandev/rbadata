@@ -6,7 +6,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from typing import List, Dict
-from .exceptions import RBAPyError
+from .exceptions import RBADataError
 
 
 def scrape_table_list() -> pd.DataFrame:
@@ -52,7 +52,7 @@ def _scrape_statistical_tables() -> List[Dict[str, str]]:
         response = requests.get(url, timeout=30)
         response.raise_for_status()
     except requests.RequestException as e:
-        raise RBAPyError(f"Failed to fetch RBA tables page: {str(e)}")
+        raise RBADataError(f"Failed to fetch RBA tables page: {str(e)}")
     
     soup = BeautifulSoup(response.content, "html.parser")
     tables = []
@@ -95,7 +95,7 @@ def _scrape_historical_tables() -> List[Dict[str, str]]:
         response = requests.get(url, timeout=30)
         response.raise_for_status()
     except requests.RequestException as e:
-        raise RBAPyError(f"Failed to fetch RBA historical data page: {str(e)}")
+        raise RBADataError(f"Failed to fetch RBA historical data page: {str(e)}")
     
     soup = BeautifulSoup(response.content, "html.parser")
     tables = []

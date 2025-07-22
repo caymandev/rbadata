@@ -8,7 +8,7 @@ from typing import Dict, List, Optional
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-from .exceptions import RBAPyError
+from .exceptions import RBADataError
 from .config import get_headers
 
 
@@ -71,7 +71,7 @@ class Glossary:
                 result["term"] = key
                 return result
         
-        raise RBAPyError(f"Term '{term}' not found in glossary")
+        raise RBADataError(f"Term '{term}' not found in glossary")
     
     def search(self, query: str) -> pd.DataFrame:
         """
@@ -149,7 +149,7 @@ class Glossary:
             Terms in the specified category
         """
         if category not in self._categories:
-            raise RBAPyError(
+            raise RBADataError(
                 f"Category '{category}' not found. "
                 f"Available: {list(self._categories.keys())}"
             )

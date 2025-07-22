@@ -10,7 +10,7 @@ This example demonstrates how to:
 - Visualize forecast evolution
 """
 
-import rbapy
+import rbadata
 import pandas as pd
 from datetime import datetime
 
@@ -25,7 +25,7 @@ except ImportError:
 def main():
     """Main function demonstrating RBA forecasts functionality."""
     
-    print("rbapy RBA Forecasts Examples")
+    print("rbadata RBA Forecasts Examples")
     print("=" * 50)
     
     # Example 1: Get all RBA forecasts
@@ -34,7 +34,7 @@ def main():
     
     # This retrieves all public RBA forecasts since 1990
     # Note: This might take a moment as it compiles data from multiple sources
-    all_forecasts = rbapy.rba_forecasts()
+    all_forecasts = rbadata.rba_forecasts()
     
     print(f"Total forecast observations: {len(all_forecasts)}")
     print(f"Date range: {all_forecasts['forecast_date'].min()} to {all_forecasts['forecast_date'].max()}")
@@ -55,7 +55,7 @@ def main():
     print("-" * 50)
     
     # Get just the most recent set of forecasts
-    latest_forecasts = rbapy.rba_forecasts(all_or_latest="latest")
+    latest_forecasts = rbadata.rba_forecasts(all_or_latest="latest")
     
     latest_date = latest_forecasts['forecast_date'].iloc[0]
     print(f"Latest forecast date: {latest_date}")
@@ -100,7 +100,7 @@ def main():
     
     # Compare forecasts with actual outcomes
     # First, get actual CPI data
-    actual_cpi = rbapy.read_rba(series_id="GCPIAGSAQP")  # CPI annual % change
+    actual_cpi = rbadata.read_rba(series_id="GCPIAGSAQP")  # CPI annual % change
     
     # Merge forecasts with actuals
     # This is a simplified example - proper analysis would need more careful date matching
