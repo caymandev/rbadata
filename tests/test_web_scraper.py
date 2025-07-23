@@ -94,9 +94,9 @@ class TestScrapeStatisticalTables:
         html_content = """
         <html>
         <body>
-            <a href="/statistics/tables/xls/a01.xls">A1 - Australian Credit Aggregates</a>
-            <a href="/statistics/tables/xls/b01.xls">B1 – Business Finance</a>
-            <a href="https://www.rba.gov.au/statistics/tables/xls/c01.xls">C1 - Credit and Charge Card Statistics</a>
+            <a href="/statistics/tables/xls/a01.xls">Australian Credit Aggregates – A1</a>
+            <a href="/statistics/tables/xls/b01.xls">Business Finance – B1</a>
+            <a href="https://www.rba.gov.au/statistics/tables/xls/c01.xls">Credit and Charge Card Statistics – C1</a>
             <a href="/other/link">Not a table link</a>
             <a href="/statistics/tables/pdf/d01.pdf">D1 - PDF Table</a>
         </body>
@@ -175,8 +175,8 @@ class TestScrapeHistoricalTables:
         html_content = """
         <html>
         <body>
-            <a href="/statistics/hist-exchange-rates/2010-2013.xls">ex_daily_1013 - Exchange Rates – Daily – 2010 to 2013</a>
-            <a href="/statistics/hist-data/a01hist.xls">A1 – Reserve Bank Assets - Historical</a>
+            <a href="/statistics/hist-exchange-rates/2010-2013.xls">Exchange Rates – Daily – 2010 to 2013 - ex_daily_1013</a>
+            <a href="/statistics/hist-data/a01hist.xls">Reserve Bank Assets - Historical – A1</a>
             <a href="/other/doc.pdf">Some PDF</a>
         </body>
         </html>
@@ -193,9 +193,9 @@ class TestScrapeHistoricalTables:
         # Verify
         assert len(result) == 2  # Only XLS files
         assert result[0]['no'] == 'ex_daily_1013'
-        assert 'Exchange Rates' in result[0]['title']
+        assert result[0]['title'] == 'Exchange Rates - Daily - 2010 to 2013'
         assert result[1]['no'] == 'A1'
-        assert 'Historical' in result[1]['title']
+        assert result[1]['title'] == 'Reserve Bank Assets - Historical'
     
     @patch('requests.get')
     def test_scrape_historical_tables_network_error(self, mock_get):
@@ -303,9 +303,9 @@ class TestWebScraperIntegration:
                 response.content = """
                 <html>
                 <body>
-                    <a href="/statistics/tables/xls/a01.xls">A1 - Credit</a>
-                    <a href="/statistics/tables/xls/e03.xls">E3 - Distribution</a>
-                    <a href="/statistics/tables/xls/g01.xls">G1 - CPI</a>
+                    <a href="/statistics/tables/xls/a01.xls">Credit – A1</a>
+                    <a href="/statistics/tables/xls/e03.xls">Distribution – E3</a>
+                    <a href="/statistics/tables/xls/g01.xls">CPI – G1</a>
                 </body>
                 </html>
                 """.encode()
@@ -314,8 +314,8 @@ class TestWebScraperIntegration:
                 response.content = """
                 <html>
                 <body>
-                    <a href="/hist/a01hist.xls">A1 - Credit Historical</a>
-                    <a href="/hist/b01hist.xls">B1 - Business Historical</a>
+                    <a href="/hist/a01hist.xls">Credit Historical – A1</a>
+                    <a href="/hist/b01hist.xls">Business Historical – B1</a>
                 </body>
                 </html>
                 """.encode()

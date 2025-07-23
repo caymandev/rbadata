@@ -9,9 +9,9 @@ from typing import Dict, Optional
 def get_download_method() -> Optional[str]:
     """
     Get the download method from environment variable.
-    
+
     This is useful for corporate networks that require special handling.
-    
+
     Returns
     -------
     str or None
@@ -23,7 +23,7 @@ def get_download_method() -> Optional[str]:
 def get_headers() -> Dict[str, str]:
     """
     Get HTTP headers for RBA requests.
-    
+
     Returns
     -------
     dict

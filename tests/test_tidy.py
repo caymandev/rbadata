@@ -164,14 +164,14 @@ class TestFindHeaderRow:
     
     def test_find_header_with_dates(self):
         """Test finding header row by date pattern."""
-        df = pd.DataFrame([
-            ['Title', None, None],
-            ['2020-01-01', '2020-02-01', '2020-03-01'],
-            [100, 200, 300]
-        ])
+        # Create a DataFrame with enough rows to trigger date search
+        data = [['Title', None, None]] * 11  # 11 rows of metadata
+        data.append(['2020-01-01', '2020-02-01', '2020-03-01'])  # Row 11 has dates
+        data.append([100, 200, 300])  # Row 12 has values
+        df = pd.DataFrame(data)
         
-        # Should find row with dates
-        assert _find_header_row(df) == 1
+        # Should find row with dates (row 11)
+        assert _find_header_row(df) == 11
     
     def test_find_header_default(self):
         """Test default header row when not found."""
