@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2024-07-24
+
+### Added
+- **pytest-asyncio dependency** - Added `pytest-asyncio` as an optional testing dependency for proper async test execution
+- **Enhanced async test support** - Improved async test reliability with proper pytest plugin integration
+
+### Enhanced
+- **Test Suite Improvements** - All 306 tests now pass consistently, including async functionality tests
+- **Async Test Mocking** - Fixed async context manager mocking issues for better test reliability
+- **Development Experience** - Async tests now run properly when `aiohttp` and `pytest-asyncio` are installed
+
+### Fixed
+- **Async Test Execution** - Resolved `pytest.mark.asyncio` warnings and test execution issues
+- **Mock Async Context Managers** - Fixed async context manager protocol support in test mocks
+- **Test Dependencies** - Proper handling of optional async test dependencies
+
+### Dependencies
+- Added `pytest-asyncio` as optional development dependency for async test execution
+
+### Technical Details
+This release focuses on improving the development and testing experience, particularly for async functionality. All core features remain unchanged, but the testing infrastructure is more robust.
+
+---
+
 ## [0.1.3] - 2024-07-24
 
 ### Major Enhancements
