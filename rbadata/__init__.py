@@ -2,7 +2,7 @@
 rbadata - Download and tidy data from the Reserve Bank of Australia
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.4"
 
 from .alerts import RBAAlerts, create_alert
 
