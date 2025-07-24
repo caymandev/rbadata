@@ -2,7 +2,6 @@
 Functions for accessing RBA cash rate data
 """
 
-
 import pandas as pd
 
 from .core import read_rba

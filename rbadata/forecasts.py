@@ -5,6 +5,7 @@ Functions for accessing RBA economic forecasts
 from typing import Literal
 
 import pandas as pd
+
 from .exceptions import RBADataError
 from .utils import check_rba_connection, get_pandas_freq_alias
 

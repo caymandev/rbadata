@@ -43,8 +43,8 @@ class TestReadRBA:
         })
         mock_tidy.return_value = sample_data
         
-        # Call function
-        result = read_rba(table_no="g1")
+        # Call function with Excel parsing
+        result = read_rba(table_no="g1", use_csv=False)
         
         # Verify calls
         mock_check.assert_called_once()
@@ -79,8 +79,8 @@ class TestReadRBA:
         })
         mock_tidy.return_value = sample_data
         
-        # Call function
-        result = read_rba(series_id="GCPIAG")
+        # Call function with Excel parsing
+        result = read_rba(series_id="GCPIAG", use_csv=False)
         
         # Verify it filtered to just the requested series
         assert len(result) == 3
@@ -100,5 +100,5 @@ class TestReadRBASeriesID:
         result = read_rba_seriesid("GCPIAG")
         
         # Verify
-        mock_read_rba.assert_called_once_with(series_id="GCPIAG")
+        mock_read_rba.assert_called_once_with(series_id="GCPIAG", start_date=None, end_date=None, use_csv=True)
         assert isinstance(result, pd.DataFrame)

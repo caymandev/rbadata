@@ -10,7 +10,6 @@ This example demonstrates how to:
 - Visualize forecast evolution
 """
 
-
 import pandas as pd
 
 import rbadata

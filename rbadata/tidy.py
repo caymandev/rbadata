@@ -9,6 +9,7 @@ from typing import Dict
 import pandas as pd
 
 from .exceptions import RBADataError
+from .standardize import standardize_rba_dataframe
 from .utils import is_rba_ts_format
 
 
@@ -66,6 +67,10 @@ def tidy_rba(
         raise RBADataError(f"No valid data found in table {table_no}")
 
     result = pd.concat(all_data, ignore_index=True)
+
+    # Standardize the DataFrame format
+    result = standardize_rba_dataframe(result, source="excel")
+
     return result
 
 
